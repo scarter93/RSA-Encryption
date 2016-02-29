@@ -26,14 +26,18 @@ architecture behavioral of montgomery_multiplier is
 
 Signal M_temp : unsigned(((2*WIDTH_IN)-1) downto 0) := (others => '0');
 Signal A_shift : unsigned(WIDTH_IN-1 downto 0);
-Signal B_i : std_logic;
+Signal B_i : integer := 0;
 Begin
 
 compute_M : Process(clk, reset, A, B, N)
 Begin
 	for i in 0 to (WIDTH_IN-1) loop
-		B_i <= B(i);
-		A_shift <= unsigned(shift_right(unsigned(A), integer(B_i)));
+		if b(i) = '1' then
+			B_i <= 1;
+		else
+			B_i <= 0;
+		end if;
+		A_shift <= unsigned(shift_right(unsigned(A), B_i));
 		M_temp <= M_temp + (A*B);
 		if M_temp(0) = '1' then
 			M_temp <= unsigned(shift_right(unsigned(M_temp), integer(1)));
