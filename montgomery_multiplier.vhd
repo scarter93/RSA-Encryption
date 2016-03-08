@@ -11,7 +11,7 @@ use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
 
 entity montgomery_multiplier is
-	Generic(WIDTH_IN : integer := 128
+	Generic(WIDTH_IN : integer := 8
 	);
 	Port(	A :	in unsigned(WIDTH_IN-1 downto 0);
 		B :	in unsigned(WIDTH_IN-1 downto 0);
