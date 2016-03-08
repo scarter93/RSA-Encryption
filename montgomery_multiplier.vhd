@@ -1,7 +1,7 @@
 -- Entity name: montgomery_multiplier
 -- Author: Stephen Carter
 -- Contact: stephen.carter@mail.mcgill.ca
--- Date: Feb 28th, 2015
+-- Date: March 8th, 2016
 -- Description:
 
 library ieee;
@@ -18,27 +18,27 @@ entity montgomery_multiplier is
 		N :	in unsigned((2*WIDTH_IN)-1 downto 0);
 		clk :	in std_logic;
 		reset :	in std_logic;
-		M : 	out unsigned(WIDTH_IN-1 downto 0)
+		M : 	out unsigned((2*WIDTH_IN)-1 downto 0)
 	);
 end entity;
 
 architecture behavioral of montgomery_multiplier is
 
 Signal M_temp : unsigned(((2*WIDTH_IN)-1) downto 0) := (others => '0');
-Signal A_shift : unsigned(WIDTH_IN-1 downto 0);
 Signal B_i : integer := 0;
 Begin
 
-compute_M : Process(clk, reset, A, B, N)
+
+M <= M_temp;
+
+compute_M : Process(clk, reset, A, B, N, M_temp)
 Begin
 	for i in 0 to (WIDTH_IN-1) loop
 		if b(i) = '1' then
-			B_i <= 1;
+			M_temp <= M_temp + A;
 		else
-			B_i <= 0;
+			M_temp <= M_temp;
 		end if;
-		A_shift <= unsigned(shift_right(unsigned(A), B_i));
-		M_temp <= M_temp + (A*B);
 		if M_temp(0) = '1' then
 			M_temp <= unsigned(shift_right(unsigned(M_temp), integer(1)));
 		else
