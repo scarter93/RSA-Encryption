@@ -25,7 +25,7 @@ end entity;
 architecture behavioral of montgomery_multiplier is
 
 Signal M_temp : unsigned(WIDTH_IN downto 0) := (others => '0');
-Signal B_i : integer := 0;
+Signal i : integer := 0;
 Begin
 
 
@@ -33,8 +33,10 @@ M <= M_temp(WIDTH_IN-1 downto 0);
 
 compute_M : Process(clk, reset, A, B, N, M_temp)
 Begin
+if clk'EVENT then
+
 	for i in 0 to (WIDTH_IN-1) loop
-		if b(i) = '1' then
+		if B(i) = '1' then
 			M_temp <= M_temp + A;
 		else
 			M_temp <= M_temp;
@@ -45,6 +47,7 @@ Begin
 			M_temp <= unsigned(shift_right(unsigned(M_temp + N), integer(1)));
 		end if;
 	end loop;
+end if;
 
 end Process;
 
