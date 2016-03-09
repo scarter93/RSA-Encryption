@@ -15,21 +15,21 @@ entity montgomery_multiplier is
 	);
 	Port(	A :	in unsigned(WIDTH_IN-1 downto 0);
 		B :	in unsigned(WIDTH_IN-1 downto 0);
-		N :	in unsigned((2*WIDTH_IN)-1 downto 0);
+		N :	in unsigned(WIDTH_IN-1 downto 0);
 		clk :	in std_logic;
 		reset :	in std_logic;
-		M : 	out unsigned((2*WIDTH_IN)-1 downto 0)
+		M : 	out unsigned(WIDTH_IN-1 downto 0)
 	);
 end entity;
 
 architecture behavioral of montgomery_multiplier is
 
-Signal M_temp : unsigned(((2*WIDTH_IN)-1) downto 0) := (others => '0');
+Signal M_temp : unsigned(WIDTH_IN downto 0) := (others => '0');
 Signal B_i : integer := 0;
 Begin
 
 
-M <= M_temp;
+M <= M_temp(WIDTH_IN-1 downto 0);
 
 compute_M : Process(clk, reset, A, B, N, M_temp)
 Begin
