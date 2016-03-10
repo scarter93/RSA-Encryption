@@ -15,36 +15,43 @@ entity montgomery_multiplier is
 	);
 	Port(	A :	in unsigned(WIDTH_IN-1 downto 0);
 		B :	in unsigned(WIDTH_IN-1 downto 0);
-		N :	in unsigned((2*WIDTH_IN)-1 downto 0);
+		N :	in unsigned(WIDTH_IN-1 downto 0);
 		clk :	in std_logic;
 		reset :	in std_logic;
-		M : 	out unsigned((2*WIDTH_IN)-1 downto 0)
+		M : 	out unsigned(WIDTH_IN-1 downto 0)
 	);
 end entity;
 
 architecture behavioral of montgomery_multiplier is
 
-Signal M_temp : unsigned(((2*WIDTH_IN)-1) downto 0) := (others => '0');
+Signal M_temp : unsigned(WIDTH_IN downto 0) := (others => '0');
+Signal temp : unsigned(WIDTH_IN downto 0) := (others => '0');
+Signal temp_s : unsigned(WIDTH_IN downto 0) := (others => '0'); 
 Signal B_i : integer := 0;
+Signal temp_i : std_logic := '0';
 Begin
 
 
-M <= M_temp;
-
-compute_M : Process(clk, reset, A, B, N, M_temp)
+compute_M : Process(clk, reset, A, B, N)
 Begin
-	for i in 0 to (WIDTH_IN-1) loop
-		if b(i) = '1' then
-			M_temp <= M_temp + A;
-		else
-			M_temp <= M_temp;
-		end if;
-		if M_temp(0) = '1' then
-			M_temp <= unsigned(shift_right(unsigned(M_temp), integer(1)));
-		else
-			M_temp <= unsigned(shift_right(unsigned(M_temp + N), integer(1)));
-		end if;
-	end loop;
+	--if(rising_edge(clk) and reset = '0') then
+		for i in 0 to (WIDTH_IN-1) loop
+			
+			if B(i) = '1' then
+				M_temp <= M_temp + A;
+			end if;
+
+			if M_temp(0) = '1' then
+				temp <= M_temp;
+				M_temp <= unsigned(shift_right(unsigned(temp), integer(1)));
+			else
+				temp <= M_temp + N;
+				M_temp <= unsigned(shift_right(unsigned(temp), integer(1)));
+			end if;
+--			temp <= M_temp + N;
+--				M_temp <= unsigned(shift_right(unsigned(temp), integer(1)));
+		end loop;
+		M <= M_temp(WIDTH_IN-1 downto 0);
 
 end Process;
 
