@@ -1,7 +1,7 @@
 -- Entity name: montgomery_multiplier
 -- Author: Stephen Carter
 -- Contact: stephen.carter@mail.mcgill.ca
--- Date: March 8th, 2016
+-- Date: March 10th, 2016
 -- Description:
 
 library ieee;
