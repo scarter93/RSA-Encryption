@@ -6,6 +6,8 @@ proc AddWaves {} {
     add wave -position end sim:/modular_exponentiation_tb/clk
     add wave -position end sim:/modular_exponentiation_tb/reset_t
     add wave -position end sim:/modular_exponentiation_tb/C_out
+  
+
 }
 
 vlib work

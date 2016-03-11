@@ -29,11 +29,12 @@ Signal i : integer := 0;
 Begin
 
 
-M <= M_temp(WIDTH_IN-1 downto 0);
+--M <= M_temp(WIDTH_IN-1 downto 0);
 
-compute_M : Process(clk, reset, A, B, N, M_temp)
+compute_M : Process(clk, reset, A, B, N)
+variable index : integer := 0;
 Begin
-if clk'EVENT then
+if reset = '0' AND rising_edge(clk) then
 
 	for i in 0 to (WIDTH_IN-1) loop
 		if B(i) = '1' then
@@ -46,9 +47,14 @@ if clk'EVENT then
 		else
 			M_temp <= unsigned(shift_right(unsigned(M_temp + N), integer(1)));
 		end if;
+		index := i;
 	end loop;
-end if;
 
+	if (index = (WIDTH_IN-1)) then 
+	M <= M_temp(WIDTH_IN-1 downto 0);
+	end if;
+	
+end if;
 end Process;
 
 end architecture;
