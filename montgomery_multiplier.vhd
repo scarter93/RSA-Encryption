@@ -54,7 +54,8 @@ Begin
 						M_temp <= unsigned(shift_right(unsigned(M_temp + A + N), integer(1)));
 					end if;
 				else
-					if (M_temp(0) xor A(0)) = '1' then
+
+					if M_temp(0) = '1' then
 						M_temp <= unsigned(shift_right(unsigned(M_temp), integer(1)));
 					else
 						M_temp <= unsigned(shift_right(unsigned(M_temp + N), integer(1)));
