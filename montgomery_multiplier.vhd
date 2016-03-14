@@ -34,6 +34,7 @@ Signal state : integer := 0;
 Signal count : integer := 0;
 Signal B_reg : unsigned(WIDTH_IN-1 downto 0) := (others => '0');
 Signal B_zeros : unsigned(WIDTH_IN-1 downto 0) := (others => '0');
+
 Begin
 
 --Process(clk, reset)
