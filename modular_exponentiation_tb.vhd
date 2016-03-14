@@ -22,6 +22,7 @@ component modular_exponentiation is
 	port(	N :	in std_logic_vector(WIDTH_IN-1 downto 0); --Number
 		Exp :	in std_logic_vector(WIDTH_IN-1 downto 0); --Exponent
 		M :	in std_logic_vector(WIDTH_IN-1 downto 0); --Modulus
+		latch_in: in std_logic;
 		clk :	in std_logic;
 		reset :	in std_logic;
 		C : 	out std_logic_vector(WIDTH_IN-1 downto 0) --Output
@@ -36,6 +37,7 @@ CONSTANT clk_period : time := 1 ns;
 Signal M_in : std_logic_vector(WIDTH_IN-1 downto 0) := (WIDTH_IN-1 downto 0 => '0');
 Signal N_in : std_logic_vector(WIDTH_IN-1 downto 0) := (WIDTH_IN-1 downto 0 => '0');
 Signal Exp_in : std_logic_vector(WIDTH_IN-1 downto 0) := (WIDTH_IN-1 downto 0 => '0');
+signal latch_in : std_logic := '0';
 
 Signal clk : std_logic := '0';
 Signal reset_t : std_logic := '0';
@@ -54,6 +56,7 @@ dut: modular_exponentiation
 			PORT MAP(	N	=> 	N_in,
 					Exp 	=> 	Exp_in,
 					M 	=> 	M_in,
+					latch_in => latch_in,
 					clk	=> 	clk,
 					reset 	=>	reset_t,
 					C	=>	C_out
@@ -83,7 +86,10 @@ Begin
 	N_in <= NUM_12;
 	Exp_in <= NUM_2;
 	M_in <= N_5;
+	latch_in <= '1';
 	wait for 1 * clk_period;
+	latch_in <= '0';
+	wait for 4 * clk_period;
 	ASSERT(C_out = "00001000") REPORT "test passed" SEVERITY NOTE;
 	ASSERT(C_out /= "00001000") REPORT "test failed" SEVERITY ERROR;
 

@@ -49,41 +49,41 @@ CONSTANT N_5	: unsigned(WIDTH_IN-1 downto 0) := "00000101";
 
 Begin
 -- device under test
-dut: montgomery_multiplier PORT MAP(	A	=> 	A_in,
-					B 	=> 	B_in,
-					N 	=> 	N_in,
-					clk	=> 	clk,
-					reset 	=>	reset_t,
-					M	=>	M_out);
-  
--- process for clock
-clk_process : Process
-Begin
-	clk <= '0';
-	wait for clk_period/2;
-	clk <= '1';
-	wait for clk_period/2;
-end process;
-
+--dut: montgomery_multiplier PORT MAP(	A	=> 	A_in,
+--					B 	=> 	B_in,
+--					N 	=> 	N_in,
+--					clk	=> 	clk,
+--					reset 	=>	reset_t,
+--					M	=>	M_out);
+--  
+---- process for clock
+--clk_process : Process
+--Begin
+--	clk <= '0';
+--	wait for clk_period/2;
+--	clk <= '1';
+--	wait for clk_period/2;
+--end process;
+--
 stim_process: process
 Begin
-
-
-	reset_t <= '1';
-	wait for 1 * clk_period;
-	reset_t <= '0';
-	wait for 2 * clk_period;
-
-
-	REPORT "begin test case for A=12, B=2, N=5";
-	REPORT "expected output is 4 00001000";
-	A_in <= NUM_12;
-	B_in <= NUM_2;
-	N_in <= N_5;
-	wait for 1 * clk_period;
-	ASSERT(M_out = "00001000") REPORT "test failed" SEVERITY NOTE;
-
-	wait;
+--
+--
+--	reset_t <= '1';
+--	wait for 1 * clk_period;
+--	reset_t <= '0';
+--	wait for 2 * clk_period;
+--
+--
+--	REPORT "begin test case for A=12, B=2, N=5";
+--	REPORT "expected output is 4 00001000";
+--	A_in <= NUM_12;
+--	B_in <= NUM_2;
+--	N_in <= N_5;
+--	wait for 1 * clk_period;
+--	ASSERT(M_out = "00001000") REPORT "test failed" SEVERITY NOTE;
+--
+wait;
 
 end process;
 end test;

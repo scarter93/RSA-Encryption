@@ -31,7 +31,7 @@ signal shift_reg, shift_reg1, shift_reg2: std_logic_vector(WIDTH_IN+1 downto 0):
 signal mod_reg1, mod_reg2: std_logic_vector(WIDTH_IN+1 downto 0):= (WIDTH_IN+1 downto 0 => '0');
 signal result_reg, result_reg1, result_reg2, result_reg3, result_reg4: std_logic_vector(WIDTH_IN+1 downto 0):= (WIDTH_IN+1 downto 0 => '0');
 
-signal current_mod : std_logic_vector(1 downto 0):= (1 downto 0 => '0');;
+signal current_mod : std_logic_vector(1 downto 0):= (1 downto 0 => '0');
 signal first: std_logic;
 
 Begin

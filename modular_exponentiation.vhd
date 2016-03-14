@@ -16,12 +16,13 @@ entity modular_exponentiation is
 
 	generic(WIDTH_IN : integer := 128
 	);
-	port(	N :	in std_logic_vector(WIDTH_IN-1 downto 0); --Number
-		Exp :	in std_logic_vector(WIDTH_IN-1 downto 0); --Exponent
-		M :	in std_logic_vector(WIDTH_IN-1 downto 0); --Modulus
-		clk :	in std_logic;
-		reset :	in std_logic;
-		C : 	out std_logic_vector(WIDTH_IN-1 downto 0) --Output
+	port(	N :	  in std_logic_vector(WIDTH_IN-1 downto 0); --Number
+		Exp :	  in std_logic_vector(WIDTH_IN-1 downto 0); --Exponent
+		M :	  in std_logic_vector(WIDTH_IN-1 downto 0); --Modulus
+		latch_in: in std_logic;
+		clk :	  in std_logic;
+		reset :	  in std_logic;
+		C : 	  out std_logic_vector(WIDTH_IN-1 downto 0) --Output
 	);
 end entity;
 
@@ -64,25 +65,25 @@ mont_mult_1: montgomery_multiplier
 		A => temp_A1, 
 		B => temp_B1, 
 		N => temp_M,
-		latch => temp_latch, 
+		latch => latch_in, 
 		clk => clk, 
 		reset => reset,
 		d_ready => temp_d_ready, 
 		M => temp_M1 
 		);
 
-mont_mult_2: montgomery_multiplier
-	generic map(WIDTH_IN => WIDTH_IN)
-	port map(
-		A => temp_A2, 
-		B => temp_B2, 
-		N => temp_M, 
-		latch => temp_latch2, 
-		clk => clk, 
-		reset => reset,
-		d_ready => temp_d_ready,  
-		M => temp_M2 
-		);
+--mont_mult_2: montgomery_multiplier
+--	generic map(WIDTH_IN => WIDTH_IN)
+--	port map(
+--		A => temp_A2, 
+--		B => temp_B2, 
+--		N => temp_M, 
+--		latch => temp_latch2, 
+--		clk => clk, 
+--		reset => reset,
+--		d_ready => temp_d_ready,  
+--		M => temp_M2 
+--		);
 
 C <= temp_C;
 
@@ -123,56 +124,57 @@ elsif clk'event then
 
 	if(index > 0) then
 	
-		L2: for x in index downto 0 loop
+		L2: for x in index downto 2 loop
 			if(Exp(x) = '1') then
 		
 					case y is
 						when 0 =>
 							
-							temp_latch <= '1';
 							temp_A1 <= temp_N;
 							temp_B1 <= temp_N;
+							--temp_latch <= '1';
 											
 							if(temp_d_ready = '1') then
-								temp_latch <= '0';
+								--temp_latch <= '0';
 								y := 1;
 							end if;
 						when 1 =>
-							temp_latch2 <= '1';
-							temp_A2 <= temp_M1;
-							temp_B2 <= N;
 							
+							temp_A1 <= temp_M1;
+							temp_B1 <= N;
+							--temp_latch2 <= '1';
+											
 							if(temp_d_ready = '1') then
-								temp_latch2 <= '0';
+								--temp_latch2 <= '0';
 								y := 2;
 							end if;
 	
 						when 2 =>
-							temp_N := temp_M2;
-							temp_C <= temp_M2;
+							temp_N := temp_M1;
+							--temp_C <= temp_M2;
 					end case;
 				
 			else
 					case z is
 						when 0 =>
 							
-							temp_latch <= '1';
 							temp_A1 <= temp_N;
 							temp_B1 <= temp_N;
+							--temp_latch <= '1';
 
 							if(temp_d_ready = '1') then
-								temp_latch <= '0';
+								--temp_latch <= '0';
 								z := 1;
 							end if;
 						when 1 =>
-							temp_N := temp_M2;
-							temp_C <= temp_M2;
+							temp_N := temp_M1;
+							--temp_C <= temp_M2;
 					end case;
 			
 			end if;
 		
 		end loop L2;
-		
+		temp_C <= temp_M2;
 	end if;
 	
 end if;		
