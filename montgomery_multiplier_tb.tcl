@@ -3,12 +3,20 @@ proc AddWaves {} {
     add wave -position end sim:/montgomery_multiplier_tb/A_in
     add wave -position end sim:/montgomery_multiplier_tb/B_in
     add wave -position end sim:/montgomery_multiplier_tb/N_in
+    add wave -position end sim:/montgomery_multiplier_tb/latch_in
     add wave -position end sim:/montgomery_multiplier_tb/clk
     add wave -position end sim:/montgomery_multiplier_tb/reset_t
     add wave -position end sim:/montgomery_multiplier_tb/M_out
+    add wave -position end  sim:/montgomery_multiplier_tb/dut/M_temp
+    add wave -position end  sim:/montgomery_multiplier_tb/dut/state
+    add wave -position end  sim:/montgomery_multiplier_tb/dut/count
+    add wave -position end  sim:/montgomery_multiplier_tb/dut/B_reg
+    add wave -position end  sim:/montgomery_multiplier_tb/dut/temp
 }
 
+
 vlib work
+
 
 ;# Compile components if any
 vcom montgomery_multiplier.vhd
