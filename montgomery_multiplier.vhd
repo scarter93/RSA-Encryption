@@ -58,27 +58,27 @@ Begin
 					state <= 1;
 				end if;
 			when 1 =>
-				if B_reg(0) = '1' then
-					M_temp <= M_temp + A;
+				if B_reg(0) = '1'then
+					if (M_temp(0) xor A(0)) = '1' then
+						M_temp <= unsigned(shift_right(unsigned(M_temp + A), integer(1)));
+					else
+						M_temp <= unsigned(shift_right(unsigned(M_temp + A + N), integer(1)));
+					end if;
 				else
-					M_temp <= M_temp;
-				end if;
-				state <= 2;
-			when 2 =>
-				if M_temp(0) = '1' then
-					M_temp <= unsigned(shift_right(unsigned(M_temp), integer(1)));
-				else
-					--temp <= ;
-					M_temp <= unsigned(shift_right(unsigned(M_temp + N), integer(1)));
+					if (M_temp(0) xor A(0)) = '1' then
+						M_temp <= unsigned(shift_right(unsigned(M_temp), integer(1)));
+					else
+						M_temp <= unsigned(shift_right(unsigned(M_temp + N), integer(1)));
+					end if;
 				end if;
 				if count = WIDTH_IN-1 then
-					state <= 3;
+					state <= 2;
 				else
 					B_reg <= unsigned(shift_right(unsigned(B_reg), integer(1)));
 					count <= count + 1;
 					state <= 1;
 				end if;
-			when 3 =>
+			when 2 =>
 				M <= M_temp(WIDTH_IN-1 downto 0);
 				--data_ready = '1';
 				state <= 0;
