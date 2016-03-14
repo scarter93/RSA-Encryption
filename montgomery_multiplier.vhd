@@ -36,17 +36,6 @@ Signal B_reg : unsigned(WIDTH_IN-1 downto 0) := (others => '0');
 Signal B_zeros : unsigned(WIDTH_IN-1 downto 0) := (others => '0');
 Begin
 
---Process(clk, reset)
---Begin
---	if rising_edge(clk) and B_i = 0 then
---		B_reg <= B;
---		B_i <= 1;
---	end if;
---end process;
-
---B_reg <= unsigned(shift_right(unsigned(B_reg), integer(1)));
-
---B_reg <= unsigned(shift_right(unsigned(B_reg), integer(1)));
 
 compute_M : Process(clk,latch,reset)
 Begin
