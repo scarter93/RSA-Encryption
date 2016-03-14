@@ -44,7 +44,7 @@ Signal latch_in : std_logic := '0';
 
 Signal M_out : unsigned(WIDTH_IN-1 downto 0) := (others => '0');
 
-CONSTANT NUM_12 : unsigned(WIDTH_IN-1 downto 0) := "00110000";
+CONSTANT NUM_12 : unsigned(WIDTH_IN-1 downto 0) := "00000011";
 CONSTANT NUM_2	: unsigned(WIDTH_IN-1 downto 0) := "00000010";
 CONSTANT N_5	: unsigned(WIDTH_IN-1 downto 0) := "00000101";
 
