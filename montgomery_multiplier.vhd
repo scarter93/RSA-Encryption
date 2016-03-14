@@ -19,6 +19,7 @@ entity montgomery_multiplier is
 		latch : in std_logic;
 		clk :	in std_logic;
 		reset :	in std_logic;
+		data_ready : out std_logic;
 		M : 	out unsigned(WIDTH_IN-1 downto 0)
 	);
 end entity;
@@ -70,7 +71,7 @@ Begin
 				end if;
 			when 2 =>
 				M <= M_temp(WIDTH_IN-1 downto 0);
-				--data_ready = '1';
+				data_ready <= '1';
 				state <= 0;
 			when others =>
 				state <= 0;
