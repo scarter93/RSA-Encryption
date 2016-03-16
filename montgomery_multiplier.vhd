@@ -47,7 +47,7 @@ Begin
 				if latch = '1' then
 					data_ready <= '0';
 					M_temp <= (others => '0');
-					count <= '0';
+					count <= 0;
 					B_reg <= B;
 					A_reg <= A;
 					state <= 1;

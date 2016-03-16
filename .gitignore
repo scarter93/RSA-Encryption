@@ -8,6 +8,8 @@ simulation/
 
 # modelsim temp files
 work/
+*.wlf
+wlf*
 
 # modelsim history
 transcript
