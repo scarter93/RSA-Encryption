@@ -1,4 +1,5 @@
 -- Entity name: montgomery_multiplier
+-- Entity name: montgomery_multiplier
 -- Author: Stephen Carter
 -- Contact: stephen.carter@mail.mcgill.ca
 -- Date: March 10th, 2016
@@ -6,89 +7,85 @@
 
 library ieee;
 use IEEE.std_logic_1164.all;
-use IEEE.std_logic_arith.all;
-use IEEE.std_logic_unsigned.all;
---use IEEE.numeric_std.all;
+--use IEEE.std_logic_arith.all;
+--use IEEE.std_logic_unsigned.all;
+use IEEE.numeric_std.all;
 
 entity montgomery_multiplier is
-	Generic(WIDTH_IN : integer := 128
+	Generic(WIDTH_IN : integer := 8
 	);
-	Port(	A :	in std_logic_vector(WIDTH_IN-1 downto 0);
-		B :	in std_logic_vector(WIDTH_IN-1 downto 0);
-		N :	in std_logic_vector(WIDTH_IN-1 downto 0);
+	Port(	A :	in unsigned(WIDTH_IN-1 downto 0);
+		B :	in unsigned(WIDTH_IN-1 downto 0);
+		N :	in unsigned(WIDTH_IN-1 downto 0);
 		latch : in std_logic;
 		clk :	in std_logic;
 		reset :	in std_logic;
-		d_ready : out std_logic;
-		M : 	out std_logic_vector(WIDTH_IN-1 downto 0)
+		data_ready : out std_logic;
+		M : 	out unsigned(WIDTH_IN-1 downto 0)
 	);
 end entity;
 
 architecture behavioral of montgomery_multiplier is
 
-signal m_reg: std_logic_vector(WIDTH_IN-1 downto 0):= (WIDTH_IN-1 downto 0 => '0');
-signal shift_reg, shift_reg1, shift_reg2: std_logic_vector(WIDTH_IN+1 downto 0):= (WIDTH_IN+1 downto 0 => '0');
-signal mod_reg1, mod_reg2: std_logic_vector(WIDTH_IN+1 downto 0):= (WIDTH_IN+1 downto 0 => '0');
-signal result_reg, result_reg1, result_reg2, result_reg3, result_reg4: std_logic_vector(WIDTH_IN+1 downto 0):= (WIDTH_IN+1 downto 0 => '0');
-
-signal current_mod : std_logic_vector(1 downto 0):= (1 downto 0 => '0');
-signal first: std_logic;
-
+Signal M_temp : unsigned(WIDTH_IN downto 0) := (others => '0');
+Signal temp : unsigned(WIDTH_IN downto 0) := (others => '0');
+Signal temp_s : unsigned(WIDTH_IN downto 0) := (others => '0'); 
+--Signal B_i : integer := 0;
+Signal temp_i : std_logic := '0';
+Signal state : integer := 0;
+Signal count : integer := 0;
+Signal B_reg : unsigned(WIDTH_IN-1 downto 0) := (others => '0');
+Signal B_zeros : unsigned(WIDTH_IN-1 downto 0) := (others => '0');
 Begin
 
-M <= result_reg4(WIDTH_IN-1 downto 0);
 
-with m_reg(0) select
-	result_reg1 <= 	result_reg + shift_reg when '1',
-			result_reg when others;
-result_reg2 <= result_reg1 - mod_reg1;
-result_reg3 <= result_reg1 - mod_reg2;
-
-current_mod <= result_reg3(WIDTH_IN+1) & result_reg2(WIDTH_IN+1);
-
-with current_mod select
-	result_reg4 <= 	result_reg1 when "11",
-			result_reg2 when "10",
-			result_reg3 when others;
-
-shift_reg1 <= shift_reg -mod_reg1;
-
-with shift_reg1(WIDTH_IN) select
-	shift_reg2 <= 	shift_reg when '1',
-			shift_reg1 when others;
-
-d_ready <= first;
-
-
-compute_M : Process(clk, reset, first, Latch, m_reg)
+compute_M : Process(clk,latch,reset)
 Begin
-	if reset = '1' then
-		first <= '1';
-	elsif(rising_edge(clk) and reset = '0') then
-		if first = '1' then
-			if latch = '1' then
-				m_reg <= B;
-				shift_reg <= "00" & A;
-				mod_reg1 <= "00" & N;
-				mod_reg2 <= '0' & N & '0';
-				result_reg <= (others => '0');
-				first <= '0';
-			end if;
-		else
-		-- when all bits have been shifted out of the multiplicand, operation is over
-		-- Note: this leads to at least one waste cycle per multiplication
-			if m_reg = 0 then
-				first <= '1';
-			else
-			-- shift the multiplicand left one bit
-				shift_reg <= shift_reg2(WIDTH_IN downto 0) & '0';
-			-- shift the multiplier right one bit
-				m_reg <= '0' & m_reg(WIDTH_IN-1 downto 1);
-			-- copy intermediate product
-				result_reg <= result_reg4;
-			end if;
-		end if;
+	if reset = '0' and rising_edge(clk) then
+		case state is
+			when 0 =>
+				data_ready <= '0';
+				M_temp <= (WIDTH_IN downto 0 => '0');
+				count <= 0;
+
+				if latch = '1' then
+					B_reg <= B;
+					state <= 1;
+				else 
+					state <= 0;
+				end if;
+			when 1 =>
+				if B_reg(0) = '1'then
+					if (M_temp(0) xor A(0)) = '1' then
+						M_temp <= unsigned(shift_right(unsigned(M_temp + A), integer(1)));
+					else
+						M_temp <= unsigned(shift_right(unsigned(M_temp + A + N), integer(1)));
+					end if;
+				else
+
+					if M_temp(0) = '1' then
+						M_temp <= unsigned(shift_right(unsigned(M_temp), integer(1)));
+					else
+						M_temp <= unsigned(shift_right(unsigned(M_temp + N), integer(1)));
+					end if;
+				end if;
+				if count = WIDTH_IN-1 then
+					state <= 2;
+				else
+					B_reg <= unsigned(shift_right(unsigned(B_reg), integer(1)));
+					count <= count + 1;
+					state <= 1;
+				end if;
+			when 2 =>
+				M <= M_temp(WIDTH_IN-1 downto 0);
+				data_ready <= '1';
+				state <= 0;
+			when others =>
+				state <= 0;
+			end case;
 	end if;
+--		temp <= M_temp + N;
+--		M_temp <= unsigned(shift_right(unsigned(temp), integer(1)));
 
 end Process;
 

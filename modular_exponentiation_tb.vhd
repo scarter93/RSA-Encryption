@@ -19,13 +19,14 @@ component modular_exponentiation is
  	generic(
 		WIDTH_IN : integer := 128
 	);
-	port(	N :	in std_logic_vector(WIDTH_IN-1 downto 0); --Number
-		Exp :	in std_logic_vector(WIDTH_IN-1 downto 0); --Exponent
-		M :	in std_logic_vector(WIDTH_IN-1 downto 0); --Modulus
-		latch_in: in std_logic;
+	port(	N :	in unsigned(WIDTH_IN-1 downto 0); --Number
+		Exp :	in unsigned(WIDTH_IN-1 downto 0); --Exponent
+		M :	in unsigned(WIDTH_IN-1 downto 0); --Modulus
+		--latch_in: in std_logic;
 		clk :	in std_logic;
 		reset :	in std_logic;
-		C : 	out std_logic_vector(WIDTH_IN-1 downto 0) --Output
+		C : 	out unsigned(WIDTH_IN-1 downto 0) --Output
+		--C : out std_logic
 	);
 
 end component;
@@ -34,19 +35,20 @@ CONSTANT WIDTH_IN : integer := 8;
 
 CONSTANT clk_period : time := 1 ns;
 
-Signal M_in : std_logic_vector(WIDTH_IN-1 downto 0) := (WIDTH_IN-1 downto 0 => '0');
-Signal N_in : std_logic_vector(WIDTH_IN-1 downto 0) := (WIDTH_IN-1 downto 0 => '0');
-Signal Exp_in : std_logic_vector(WIDTH_IN-1 downto 0) := (WIDTH_IN-1 downto 0 => '0');
+Signal M_in : unsigned(WIDTH_IN-1 downto 0) := (WIDTH_IN-1 downto 0 => '0');
+Signal N_in : unsigned(WIDTH_IN-1 downto 0) := (WIDTH_IN-1 downto 0 => '0');
+Signal Exp_in : unsigned(WIDTH_IN-1 downto 0) := (WIDTH_IN-1 downto 0 => '0');
 signal latch_in : std_logic := '0';
 
 Signal clk : std_logic := '0';
 Signal reset_t : std_logic := '0';
 
-Signal C_out : std_logic_vector(WIDTH_IN-1 downto 0) := (WIDTH_IN-1 downto 0 => '0');
+Signal C_out : unsigned(WIDTH_IN-1 downto 0) := (WIDTH_IN-1 downto 0 => '0');
+--signal c_out : std_logic;
 
-CONSTANT NUM_12 : std_logic_vector(WIDTH_IN-1 downto 0) := "00001100";
-CONSTANT NUM_2	: std_logic_vector(WIDTH_IN-1 downto 0) := "00001001";--9
-CONSTANT N_5	: std_logic_vector(WIDTH_IN-1 downto 0) := "00000101";
+CONSTANT NUM_12 : unsigned(WIDTH_IN-1 downto 0) := "00010010";
+CONSTANT NUM_2	: unsigned(WIDTH_IN-1 downto 0) := "00000001";
+CONSTANT N_5	: unsigned(WIDTH_IN-1 downto 0) := "00000101";
 
 
 Begin
@@ -56,7 +58,7 @@ dut: modular_exponentiation
 			PORT MAP(	N	=> 	N_in,
 					Exp 	=> 	Exp_in,
 					M 	=> 	M_in,
-					latch_in => latch_in,
+					--latch_in => latch_in,
 					clk	=> 	clk,
 					reset 	=>	reset_t,
 					C	=>	C_out
@@ -86,12 +88,9 @@ Begin
 	N_in <= NUM_12;
 	Exp_in <= NUM_2;
 	M_in <= N_5;
-	latch_in <= '1';
-	wait for 1 * clk_period;
-	latch_in <= '0';
 	wait for 4 * clk_period;
-	ASSERT(C_out = "00001000") REPORT "test passed" SEVERITY NOTE;
-	ASSERT(C_out /= "00001000") REPORT "test failed" SEVERITY ERROR;
+	--ASSERT(C_out = "00001000") REPORT "test passed" SEVERITY NOTE;
+	--ASSERT(C_out /= "00001000") REPORT "test failed" SEVERITY ERROR;
 
 	wait;
 
