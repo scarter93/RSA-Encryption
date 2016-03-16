@@ -34,6 +34,7 @@ Signal temp_i : std_logic := '0';
 Signal state : integer := 0;
 Signal count : integer := 0;
 Signal B_reg : unsigned(WIDTH_IN-1 downto 0) := (others => '0');
+Signal A_reg : unsigned(WIDTH_IN-1 downto 0) := (others => '0');
 Signal B_zeros : unsigned(WIDTH_IN-1 downto 0) := (others => '0');
 Begin
 
@@ -44,15 +45,19 @@ Begin
 		case state is
 			when 0 =>
 				if latch = '1' then
+					data_ready <= '0';
+					M_temp <= (others => '0');
+					count <= '0';
 					B_reg <= B;
+					A_reg <= A;
 					state <= 1;
 				end if;
 			when 1 =>
 				if B_reg(0) = '1'then
-					if (M_temp(0) xor A(0)) = '1' then
-						M_temp <= unsigned(shift_right(unsigned(M_temp + A), integer(1)));
+					if (M_temp(0) xor A_reg(0)) = '1' then
+						M_temp <= unsigned(shift_right(unsigned(M_temp + A_reg), integer(1)));
 					else
-						M_temp <= unsigned(shift_right(unsigned(M_temp + A + N), integer(1)));
+						M_temp <= unsigned(shift_right(unsigned(M_temp + A_reg + N), integer(1)));
 					end if;
 				else
 
