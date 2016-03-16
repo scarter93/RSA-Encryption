@@ -26,7 +26,7 @@ end entity;
 
 architecture behavioral of montgomery_multiplier is
 
-Signal M_temp : unsigned(WIDTH_IN downto 0) := (others => '0');
+Signal M_temp : unsigned(WIDTH_IN+1 downto 0) := (others => '0');
 Signal temp : unsigned(WIDTH_IN downto 0) := (others => '0');
 Signal temp_s : unsigned(WIDTH_IN downto 0) := (others => '0'); 
 --Signal B_i : integer := 0;

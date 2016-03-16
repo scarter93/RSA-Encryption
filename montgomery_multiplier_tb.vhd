@@ -44,9 +44,9 @@ Signal latch_in : std_logic := '0';
 
 Signal M_out : unsigned(WIDTH_IN-1 downto 0) := (others => '0');
 
-CONSTANT NUM_12 : unsigned(WIDTH_IN-1 downto 0) := "00000011";
-CONSTANT NUM_2	: unsigned(WIDTH_IN-1 downto 0) := "00000010";
-CONSTANT N_5	: unsigned(WIDTH_IN-1 downto 0) := "00000101";
+CONSTANT NUM_12 : unsigned(WIDTH_IN-1 downto 0) := "00001100";
+CONSTANT NUM_2	: unsigned(WIDTH_IN-1 downto 0) :=  "00000010";
+CONSTANT N_5	: unsigned(WIDTH_IN-1 downto 0) :=  "00000101";
 
 
 Begin
@@ -77,6 +77,17 @@ Begin
 	reset_t <= '0';
 	wait for 1 * clk_period;
 
+	
+	REPORT "begin test case for A=2, B=4, N=7";
+	REPORT "expected output is 1 00000001";
+	A_in <= NUM_2;
+	B_in <= "00000100";
+	N_in <= "00000111";
+	latch_in <= '1';
+	wait for 2 * clk_period;
+	latch_in <= '0';
+	wait for 8 * clk_period;
+	ASSERT(M_out = "00000001") REPORT "test failed" SEVERITY ERROR;
 
 	REPORT "begin test case for A=12, B=2, N=5";
 	REPORT "expected output is 4 00000100";
@@ -86,8 +97,64 @@ Begin
 	latch_in <= '1';
 	wait for 2 * clk_period;
 	latch_in <= '0';
-	wait for 4 * clk_period;
-	ASSERT(M_out = "00000100") REPORT "test failed" SEVERITY ERROR;
+	wait for 8 * clk_period;
+	ASSERT(M_out = "0000100") REPORT "test failed" SEVERITY ERROR;
+
+	REPORT "begin test case for A=12, B=19, N=31";
+	REPORT "expected output is 11 00001011";
+	A_in <= NUM_12;
+	B_in <= "00010011";
+	N_in <= "00011111";
+	latch_in <= '1';
+	wait for 2 * clk_period;
+	latch_in <= '0';
+	wait for 8 * clk_period;
+	ASSERT(M_out = "00001011") REPORT "test failed" SEVERITY ERROR;
+
+	REPORT "begin test case for A=18, B=10, N=7";
+	REPORT "expected output is 5 00000101";
+	A_in <= "00010010";
+	B_in <= "00001010";
+	N_in <= "00000111";
+	latch_in <= '1';
+	wait for 2 * clk_period;
+	latch_in <= '0';
+	wait for 8 * clk_period;
+	ASSERT(M_out = "0000101") REPORT "test failed" SEVERITY ERROR;
+
+	REPORT "begin test case for A=246, B=231, N=213";
+	REPORT "expected output is 168 10101000";
+	A_in <= "11110110";
+	B_in <= "11100111";
+	N_in <= "11010101";
+	latch_in <= '1';
+	wait for 2 * clk_period;
+	latch_in <= '0';
+	wait for 8 * clk_period;
+	ASSERT(M_out = "10101000") REPORT "test failed" SEVERITY ERROR;
+
+	REPORT "begin test case for A=126, B=94, N=33";
+	REPORT "expected output is 30 00001110";
+	A_in <= "01111110";
+	B_in <= "01011110";
+	N_in <= "00100001";
+	latch_in <= '1';
+	wait for 2 * clk_period;
+	latch_in <= '0';
+	wait for 8 * clk_period;
+	ASSERT(M_out = "00011110") REPORT "test failed" SEVERITY ERROR;
+
+	REPORT "begin test case for A=74, B=73, N=75";
+	REPORT "expected output is 2 00000010";
+	A_in <= "01001010";
+	B_in <= "01001001";
+	--N_in <= "01001011";
+	N_in <= "00000111";
+	latch_in <= '1';
+	wait for 2 * clk_period;
+	latch_in <= '0';
+	wait for 8 * clk_period;
+	ASSERT(M_out = "00000010") REPORT "test failed" SEVERITY ERROR;
 
 	wait;
 
