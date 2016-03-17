@@ -1,0 +1,9 @@
+# quartus backup files
+*.bak
+
+# modelsim work folder
+work/
+
+*.mpf
+*.mti
+*.wlf

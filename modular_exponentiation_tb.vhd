@@ -46,8 +46,8 @@ Signal reset_t : std_logic := '0';
 Signal C_out : unsigned(WIDTH_IN-1 downto 0) := (WIDTH_IN-1 downto 0 => '0');
 --signal c_out : std_logic;
 
-CONSTANT NUM_12 : unsigned(WIDTH_IN-1 downto 0) := "00010010";
-CONSTANT NUM_2	: unsigned(WIDTH_IN-1 downto 0) := "00000001";
+CONSTANT NUM_12 : unsigned(WIDTH_IN-1 downto 0) := "00001100";
+CONSTANT NUM_2	: unsigned(WIDTH_IN-1 downto 0) := "00001010";
 CONSTANT N_5	: unsigned(WIDTH_IN-1 downto 0) := "00000101";
 
 

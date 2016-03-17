@@ -6,6 +6,14 @@ proc AddWaves {} {
     add wave -radix decimal -position end sim:/modular_exponentiation_tb/clk
     add wave -radix decimal -position end sim:/modular_exponentiation_tb/reset_t
     add wave -radix decimal -position end sim:/modular_exponentiation_tb/C_out
+    add wave -radix decimal -position end sim:/modular_exponentiation_tb/dut/state
+    add wave -radix decimal -position end sim:/modular_exponentiation_tb/dut/temp_M1
+    add wave -radix decimal -position end sim:/modular_exponentiation_tb/dut/latch_in
+    add wave -radix decimal -position end sim:/modular_exponentiation_tb/dut/temp_A1
+    add wave -radix decimal -position end sim:/modular_exponentiation_tb/dut/temp_B1
+    add wave -radix decimal -position end sim:/modular_exponentiation_tb/dut/sqr_mult/temp_N
+    add wave -radix decimal -position end sim:/modular_exponentiation_tb/dut/sqr_mult/count	
+    add wave -radix binary -position end sim:/modular_exponentiation_tb/dut/sqr_mult/temp_Exp	
   
 
 }

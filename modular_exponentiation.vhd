@@ -88,7 +88,7 @@ mont_mult_1: montgomery_multiplier
 
 C <= temp_C;
 
-sqr_mult : Process(clk, reset, N, Exp)
+sqr_mult : Process(clk, reset, N, Exp, M)
 
 variable index : integer := 0;
 variable count : integer := 0;
@@ -119,37 +119,41 @@ case state is
 	when s0 =>
 	
 	if((to_integer(M)/=0) OR (to_integer(Exp)/=0)) then
-	temp_M <= M;
-	temp_Exp := Exp;
-	state <= s1;
+		temp_M <= M;
+		temp_Exp := Exp;
+		state <= s1;
 	else
-	state <= s0;
+		state <= s0;
 	end if;
-
-	when s1 =>
+	
+	when s1=>
 		if temp_Exp(WIDTH_IN-1) = '1' then
-			temp_N := N;		
-			state <= s2;
-		else
+			temp_N := N;
 			temp_Exp := (shift_left(temp_Exp, natural(1)));
 			count := count + 1;
-			state <= s1;
+			state <= s2;
+		else
+			temp_N := to_unsigned(1, WIDTH_IN);				
+			temp_Exp := (shift_left(temp_Exp, natural(1)));
+			count := count + 1;
+			state <= s2;
 		end if;
-	
 	
 	when s2 =>
 		temp_A1 <= temp_N;
 		temp_B1 <= temp_N;
 		latch_in <= '1';
-		--y := 1;
 		state <= s3;
+	
 	when s3 =>
 		latch_in <= '0';
+
 		if(temp_d_ready = '1') then
 			
 			if(temp_Exp(WIDTH_IN -1) = '1') then
 				temp_A1 <= temp_M1;
 				temp_B1 <= N;
+				latch_in <= '1';
 				state <= s4;
 			else 
 				temp_N := temp_M1;
@@ -161,10 +165,9 @@ case state is
 	
 	
 	when s4 => 
-		latch_in <= '1';
+		latch_in <= '0';
 
 		if(temp_d_ready = '1') then
-			latch_in <= '0';
 			temp_N := temp_M1;
 			state <= s5;
 		else
