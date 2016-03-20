@@ -20,6 +20,8 @@ proc AddWaves {} {
     add wave -radix unsigned -position end  sim:/montgomery_multiplier_tb/dut/count
     add wave -radix unsigned -position end  sim:/montgomery_multiplier_tb/dut/B_reg
     add wave -radix unsigned -position end  sim:/montgomery_multiplier_tb/dut/temp
+    add wave -radix unsigned -position end  sim:/montgomery_multiplier_tb/dut/N_temp
+    add wave -radix unsigned -position end  sim:/montgomery_multiplier_tb/dut/q
 }
 
 

@@ -26,7 +26,7 @@ end entity;
 
 architecture behavioral of montgomery_multiplier is
 
-Signal M_temp : unsigned(WIDTH_IN+1 downto 0) := (others => '0');
+Signal M_temp : unsigned(WIDTH_IN downto 0) := (others => '0');
 Signal temp : unsigned(WIDTH_IN downto 0) := (others => '0');
 Signal temp_s : unsigned(WIDTH_IN downto 0) := (others => '0'); 
 --Signal B_i : integer := 0;
@@ -36,6 +36,9 @@ Signal count : integer := 0;
 Signal B_reg : unsigned(WIDTH_IN-1 downto 0) := (others => '0');
 Signal A_reg : unsigned(WIDTH_IN-1 downto 0) := (others => '0');
 Signal B_zeros : unsigned(WIDTH_IN-1 downto 0) := (others => '0');
+Signal N_temp : unsigned(WIDTH_IN-1 downto 0);
+Signal q : integer := 0;
+
 Begin
 
 
@@ -50,27 +53,31 @@ Begin
 					count <= 0;
 					B_reg <= B;
 					A_reg <= A;
+					N_temp <= N;
 					state <= 1;
 				end if;
 			when 1 =>
-				if B_reg(0) = '1'then
-					if (M_temp(0) xor A_reg(0)) = '1' then
-						M_temp <= unsigned(shift_right(unsigned(M_temp + A_reg), integer(1)));
-					else
-						M_temp <= unsigned(shift_right(unsigned(M_temp + A_reg + N), integer(1)));
-					end if;
-				else
-
-					if M_temp(0) = '1' then
-						M_temp <= unsigned(shift_right(unsigned(M_temp), integer(1)));
-					else
-						M_temp <= unsigned(shift_right(unsigned(M_temp + N), integer(1)));
-					end if;
-				end if;
-				if count = WIDTH_IN-1 then
+				q <= (to_integer( unsigned'( "" & M_temp(0))) + to_integer( unsigned'( "" & A_reg(0)))*to_integer( unsigned'( "" & B_reg(0)))) MOD 2;
+				M_temp <= (M_temp + unsigned'("" & A_reg(0))*B_reg + to_unsigned(q, 1)*N)/2;
+				N_temp <= unsigned(shift_right(unsigned(N_temp), integer(1)));
+--				if B_reg(0) = '1'then
+--					if (M_temp(0) xor A_reg(0)) = '1' then
+--						M_temp <= unsigned(shift_right(unsigned(M_temp + A_reg), integer(1)));
+--					else
+--						M_temp <= unsigned(shift_right(unsigned(M_temp + A_reg + N), integer(1)));
+--					end if;
+--				else
+--
+--					if M_temp(0) = '1' then
+--						M_temp <= unsigned(shift_right(unsigned(M_temp), integer(1)));
+--					else
+--						M_temp <= unsigned(shift_right(unsigned(M_temp + N), integer(1)));
+--					end if;
+--				end if;
+				if N_temp = to_unsigned(integer(1), WIDTH_IN) then
 					state <= 2;
 				else
-					B_reg <= unsigned(shift_right(unsigned(B_reg), integer(1)));
+					A_reg <= unsigned(shift_right(unsigned(A_reg), integer(1)));
 					count <= count + 1;
 					state <= 1;
 				end if;
