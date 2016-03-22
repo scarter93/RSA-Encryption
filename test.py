@@ -54,13 +54,14 @@ def mod_mult(a,b,N):
 def mod_exp(C,d,n):
 
     C = conv(C, n)
-    d = conv(d, n)
+    # d = conv(d, n)
     k = num_bits(n)
     iters = num_bits(d)
     print("c: " + str(C) + " d: " + str(d))
 
     mask = 0b00000001
     K = int(2**(2*k) % n)
+    # k = conv(K, n)
     P_old = mod_mult(K,C,n)
     R = mod_mult(K,1,n)
     
