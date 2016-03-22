@@ -1,3 +1,5 @@
+import math
+
 #b = 16
 
 #print(bin(a),bin(b))
@@ -9,7 +11,20 @@
 
 #print("N_temp = " + bin(N_temp)) 
 
+# main tester function
+def main():
+    # basic encryption example
+    # a = 9
+    # b = 7
+    # n = 143
 
+    # basic decryption example
+    a = 48
+    b = 108
+    n = 143
+
+    print(mod_exp(a, b, n))
+    print("montgomery product: " + str(mont_result(a, b, n)))
 
 
 def mod_mult(a,b,N):
@@ -36,12 +51,18 @@ def mod_mult(a,b,N):
 
 
 def mod_exp(C,d,n):
+
+    # C = conv(C, n)
+    # d = conv(d, n)
+    k = num_bits(n)
+    print("c: " + str(C) + " d: " + str(d))
+
     mask = 0b00000001
-    K = int(2^(2*1024) % n)
+    K = int(2**(2*k) % n)
     P_old = mod_mult(K,C,n)
     R = mod_mult(K,1,n)
     
-    for i in range(17):
+    for i in range(num_bits(d)):
         P = mod_mult(P_old,P_old,n)
         if (mask & d) == 1:
             R = mod_mult(R,P_old,n)
@@ -49,5 +70,46 @@ def mod_exp(C,d,n):
         p_old = P
     M = mod_mult(1,R,n)
     return M
-    
-print(mod_exp(1976620216402300889624482718775150,65537 ,145906768007583323230186939349070635292401872375357164399581871019873438799005358938369571402670149802121818086292467422828157022922076746906543401224889672472407926969987100581290103199317858753663710862357656510507883714297115637342788911463535102712032765166518411726859837988672111837205085526346618740053))
+
+def conv(x, n):
+    k = num_bits(n)
+    r = 2**k
+    return int( (x * r) % n )
+
+# def conv_inv()
+
+def num_bits(x):
+    return int(math.ceil(math.log(x,2)))
+
+
+def mont_result(a, b, n):
+    A = conv(a, n)
+    B = conv(b, n)
+    k = num_bits(n)
+    r = 2**k
+
+    r_inv = modinv(r, n)
+
+    return (A * r * r_inv) % n
+
+
+# full example 
+# print(mod_exp(1976620216402300889624482718775150, 65537 ,145906768007583323230186939349070635292401872375357164399581871019873438799005358938369571402670149802121818086292467422828157022922076746906543401224889672472407926969987100581290103199317858753663710862357656510507883714297115637342788911463535102712032765166518411726859837988672111837205085526346618740053))
+
+## taken from http://stackoverflow.com/questions/4798654/modular-multiplicative-inverse-function-in-python
+def egcd(a, b):
+    if a == 0:
+        return (b, 0, 1)
+    else:
+        g, y, x = egcd(b % a, a)
+        return (g, x - (b // a) * y, y)
+
+def modinv(a, m):
+    g, x, y = egcd(a, m)
+    if g != 1:
+        raise Exception('modular inverse does not exist')
+    else:
+        return x % m
+
+if __name__ == "__main__":
+    main()
