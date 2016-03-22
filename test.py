@@ -20,23 +20,24 @@ def main():
 
     # basic decryption example
     a = 48
-    b = 108
+    b = 103
     n = 143
 
     print(mod_exp(a, b, n))
     print("montgomery product: " + str(mont_result(a, b, n)))
 
 
+
 def mod_mult(a,b,N):
     mask = 0b00000001
     S = 0b00000000
     N_temp = N
-    for i in range(1024):
+    for i in range(num_bits(N)):
         #print("mask & s =" + bin(mask & S))
         #print("mask & a =" + bin(mask & a))
         #print("mask & b =" + bin(mask & b))
         #print("(mask & a)*(mask & b) =" + bin((mask & a)*(mask & b)))
-        q = (mask & S + (mask & a)*(mask & b)) % 2
+        q = ((mask & S) + (mask & a)*(mask & b)) % 2
         #print("q_i = " + str(q))
         S = int((S + (mask & a)*b + q*N)/2)
         #print("S_i = " + str(S))
@@ -52,9 +53,10 @@ def mod_mult(a,b,N):
 
 def mod_exp(C,d,n):
 
-    # C = conv(C, n)
-    # d = conv(d, n)
+    C = conv(C, n)
+    d = conv(d, n)
     k = num_bits(n)
+    iters = num_bits(d)
     print("c: " + str(C) + " d: " + str(d))
 
     mask = 0b00000001
@@ -62,7 +64,7 @@ def mod_exp(C,d,n):
     P_old = mod_mult(K,C,n)
     R = mod_mult(K,1,n)
     
-    for i in range(num_bits(d)):
+    for i in range(iters):
         P = mod_mult(P_old,P_old,n)
         if (mask & d) == 1:
             R = mod_mult(R,P_old,n)
@@ -113,3 +115,32 @@ def modinv(a, m):
 
 if __name__ == "__main__":
     main()
+
+
+
+## attempt at following the algorithm to a T
+# def mod_exp(C,d,n):
+
+#     C = conv(C, n)
+#     d = conv(d, n)
+#     k = num_bits(n)
+#     iters = num_bits(d)
+#     print("c: " + str(C) + " d: " + str(d))
+
+#     mask = 0b00000001
+#     K = int(2**(2*k) % n)
+#     P = []
+#     R = []
+#     P.append(mod_mult(K,C,n))
+#     R.append(mod_mult(K,1,n))
+    
+#     for i in range(iters):
+#         P.append(mod_mult(P[i],P[i],n))
+#         if (mask & d) == 1:
+#             print(i)
+#             R.append(mod_mult(R[i],P[i],n))
+#         else:
+#             R.append(0)
+#         d = d >> 1
+#     M = mod_mult(1,R[len(R) -1],n)
+#     return M
