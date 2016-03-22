@@ -51,16 +51,17 @@ Begin
 					data_ready <= '0';
 					M_temp <= (others => '0');
 					count <= 0;
+					q <= 0;
 					B_reg <= B;
 					A_reg <= A;
 					N_temp <= N;
 					state <= 1;
 				end if;
 			when 1 =>
-				q <= (to_integer( unsigned'( "" & M_temp(0))) + to_integer( unsigned'( "" & A_reg(0)))*to_integer( unsigned'( "" & B_reg(0)))) MOD 2;
-				M_temp <= (M_temp + unsigned'("" & A_reg(0))*B_reg + to_unsigned(q, 1)*N)/2;
-				N_temp <= unsigned(shift_right(unsigned(N_temp), integer(1)));
---				if B_reg(0) = '1'then
+				--q <= (to_integer( unsigned'( "" & M_temp(0))) + to_integer( unsigned'( "" & A_reg(0)))*to_integer( unsigned'( "" & B_reg(0)))) MOD 2;
+				--q <= (to_integer( unsigned'("0000000" & M_temp(0))) + to_integer(unsigned'("0000000" & A_reg(0)))*to_integer(unsigned'("0000000" & B_reg(0)))) MOD 2;
+				
+				
 --					if (M_temp(0) xor A_reg(0)) = '1' then
 --						M_temp <= unsigned(shift_right(unsigned(M_temp + A_reg), integer(1)));
 --					else
@@ -74,15 +75,19 @@ Begin
 --						M_temp <= unsigned(shift_right(unsigned(M_temp + N), integer(1)));
 --					end if;
 --				end if;
-				if N_temp = to_unsigned(integer(1), WIDTH_IN) then
+				if N_temp = "00000001" then
 					state <= 2;
 				else
+					M_temp <= (M_temp + unsigned'("" & A_reg(0))*B_reg + to_unsigned((to_integer( unsigned'("0000000" & M_temp(0))) + to_integer(unsigned'("0000000" & A_reg(0)))*to_integer(unsigned'("0000000" & B_reg(0)))) MOD 2, 1)*N)/2;
+					N_temp <= unsigned(shift_right(unsigned(N_temp), integer(1)));
+--					if B_reg(0) = '1'then
 					A_reg <= unsigned(shift_right(unsigned(A_reg), integer(1)));
 					count <= count + 1;
 					state <= 1;
 				end if;
 			when 2 =>
 				M <= M_temp(WIDTH_IN-1 downto 0);
+				--M_temp <= B_zeros & '0';
 				data_ready <= '1';
 				state <= 0;
 			when others =>
