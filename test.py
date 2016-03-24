@@ -19,16 +19,28 @@ def main():
     # n = 143
 
     # basic decryption example
-    a = 48
-    b = 103
-    n = 143
+    # a = 48
+    # b = 103
+    # n = 143
+
+    # new example
+    # a = 2 # encrypt
+    # b = 7
+    a = 29 # decrypt
+    b = 3   
+    n = 33
 
     print(mod_exp(a, b, n))
-    print("montgomery product: " + str(mont_result(a, b, n)))
-
+    # print("montgomery product: " + str(mont_result(a, b, n)))
 
 
 def mod_mult(a,b,N):
+
+
+    # a = conv(a, N)
+    # b = conv(b, N)
+    # print("a: " + str(a) + " b: " + str(b))
+
     mask = 0b00000001
     S = 0b00000000
     N_temp = N
@@ -45,32 +57,36 @@ def mod_mult(a,b,N):
         #print("N_temp = " + bin(N_temp))
         a = a >> 1
         #print("a = " + bin(a))
-        if N_temp == 1:
+        if N_temp == 0:
             break
+
+    if (S > N):
+        S -= N
     print("S = " + str(S))
     return S
 
 
+
 def mod_exp(C,d,n):
 
-    C = conv(C, n)
-    # d = conv(d, n)
+    # C = conv(C, n)
+    #d = conv(d, n)
     k = num_bits(n)
-    iters = num_bits(d)
     print("c: " + str(C) + " d: " + str(d))
 
     mask = 0b00000001
     K = int(2**(2*k) % n)
-    # k = conv(K, n)
+    # K = conv(K, n)
     P_old = mod_mult(K,C,n)
     R = mod_mult(K,1,n)
+    # print("P_old: " + str(P_old) + " R: " + str(R))
     
-    for i in range(iters):
+    for i in range(num_bits(d)):
         P = mod_mult(P_old,P_old,n)
         if (mask & d) == 1:
             R = mod_mult(R,P_old,n)
         d = d >> 1
-        p_old = P
+        P_old = P
     M = mod_mult(1,R,n)
     return M
 
@@ -92,8 +108,9 @@ def mont_result(a, b, n):
     r = 2**k
 
     r_inv = modinv(r, n)
+    print(str(r) + " " + str(r_inv))
 
-    return (A * r * r_inv) % n
+    return (A * B * r_inv) % n
 
 
 # full example 
