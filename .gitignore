@@ -1,9 +1,20 @@
 # quartus backup files
 *.bak
 
-# modelsim work folder
-work/
+# database files for quartus
+db/
+incremental_db/
 
-*.mpf
-*.mti
+# simulation temp files
+output_files/
+simulation/
+
+# modelsim temp files
+work/
 *.wlf
+wlf*
+
+# modelsim history
+transcript
+
+
