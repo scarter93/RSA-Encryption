@@ -58,31 +58,31 @@ Begin
 					state <= 1;
 				end if;
 			when 1 =>
+				
 				--q <= (to_integer( unsigned'( "" & M_temp(0))) + to_integer( unsigned'( "" & A_reg(0)))*to_integer( unsigned'( "" & B_reg(0)))) MOD 2;
 				--q <= (to_integer( unsigned'("0000000" & M_temp(0))) + to_integer(unsigned'("0000000" & A_reg(0)))*to_integer(unsigned'("0000000" & B_reg(0)))) MOD 2;
+				if A_reg(0) = '1' then
 				
-				
---					if (M_temp(0) xor A_reg(0)) = '1' then
---						M_temp <= unsigned(shift_right(unsigned(M_temp + A_reg), integer(1)));
---					else
---						M_temp <= unsigned(shift_right(unsigned(M_temp + A_reg + N), integer(1)));
---					end if;
---				else
---
---					if M_temp(0) = '1' then
---						M_temp <= unsigned(shift_right(unsigned(M_temp), integer(1)));
---					else
---						M_temp <= unsigned(shift_right(unsigned(M_temp + N), integer(1)));
---					end if;
---				end if;
-				if N_temp = "00000001" then
+					if (M_temp(0) xor B_reg(0)) = '1' then
+						M_temp <= unsigned(shift_right(unsigned(M_temp + B_reg + N), integer(1)));
+					else
+						M_temp <= unsigned(shift_right(unsigned(M_temp + B_reg), integer(1)));
+					end if;
+				else
+
+					if M_temp(0) = '1' then
+						M_temp <= unsigned(shift_right(unsigned(M_temp + N), integer(1)));
+					else
+						M_temp <= unsigned(shift_right(unsigned(M_temp), integer(1)));
+					end if;
+				end if;
+				--M_temp <= (M_temp + unsigned'("" & A_reg(0))*B_reg + to_unsigned((to_integer( unsigned'("0000000" & M_temp(0))) + to_integer(unsigned'("0000000" & A_reg(0)))*to_integer(unsigned'("0000000" & B_reg(0)))) MOD 2, 1)*N)/2;
+				N_temp <= unsigned(shift_right(unsigned(N_temp), integer(1)));
+				A_reg <= unsigned(shift_right(unsigned(A_reg), integer(1)));
+				if N_temp = to_unsigned(integer(1), WIDTH_IN) then
 					state <= 2;
 				else
-					M_temp <= (M_temp + unsigned'("" & A_reg(0))*B_reg + to_unsigned((to_integer( unsigned'("0000000" & M_temp(0))) + to_integer(unsigned'("0000000" & A_reg(0)))*to_integer(unsigned'("0000000" & B_reg(0)))) MOD 2, 1)*N)/2;
-					N_temp <= unsigned(shift_right(unsigned(N_temp), integer(1)));
---					if B_reg(0) = '1'then
-					A_reg <= unsigned(shift_right(unsigned(A_reg), integer(1)));
-					count <= count + 1;
+					--count <= count + 1;
 					state <= 1;
 				end if;
 			when 2 =>
