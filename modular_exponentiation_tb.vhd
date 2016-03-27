@@ -17,7 +17,7 @@ architecture test of modular_exponentiation_tb is
 -- define the ALU compontent to be tested
 component modular_exponentiation is
  	generic(
-		WIDTH_IN : integer := 128
+		WIDTH_IN : integer := 8
 	);
 	port(	N :	in unsigned(WIDTH_IN-1 downto 0); --Number
 		Exp :	in unsigned(WIDTH_IN-1 downto 0); --Exponent
@@ -80,14 +80,14 @@ Begin
 	reset_t <= '1';
 	wait for 1 * clk_period;
 	reset_t <= '0';
-	wait for 1.5 * clk_period;
+	wait for 1 * clk_period;
 
 
-	REPORT "begin test case for A=12, B=2, N=5";
+	REPORT "begin test case for a=9, b=7, N=143";
 	REPORT "expected output is 4 00001000";
-	N_in <= NUM_12;
-	Exp_in <= NUM_2;
-	M_in <= N_5;
+	N_in <= "00001001";
+	Exp_in <= "00000111";
+	M_in <= "10001111";
 	wait for 4 * clk_period;
 	--ASSERT(C_out = "00001000") REPORT "test passed" SEVERITY NOTE;
 	--ASSERT(C_out /= "00001000") REPORT "test failed" SEVERITY ERROR;

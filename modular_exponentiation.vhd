@@ -17,7 +17,7 @@ use lpm.lpm_components.all;
 
 entity modular_exponentiation is
 
-	generic(WIDTH_IN : integer := 128
+	generic(WIDTH_IN : integer := 8
 	);
 	port(	N :	  in unsigned(WIDTH_IN-1 downto 0); --Number
 		Exp :	  in unsigned(WIDTH_IN-1 downto 0); --Exponent
@@ -44,7 +44,7 @@ signal temp_M : unsigned(WIDTH_IN-1 downto 0) := (WIDTH_IN-1 downto 0 => '0');
 --signal temp_Exp : unsigned(WIDTH_IN-1 downto 0);
 signal temp_C : unsigned(WIDTH_IN-1 downto 0):= (WIDTH_IN-1 downto 0 => '0');
 --signal temp_C : std_logic;
-signal K_1 : unsigned(WIDTH_IN-1 downto 0) := (others => '0');
+signal K_1 : unsigned(2*WIDTH_IN downto 0) := (others => '0');
 signal K : std_logic_vector (WIDTH_IN-1 downto 0) := (others => '0');
 
 type STATE_TYPE is (s0, s1, s2, s3, s4, s5, s6, s7);
@@ -94,7 +94,7 @@ mont_mult_2: montgomery_multiplier
 
 divide: LPM_DIVIDE
 	generic map( 
-		LPM_WIDTHN => WIDTH_IN,
+		LPM_WIDTHN => 2*WIDTH_IN+1,
 		LPM_WIDTHD => WIDTH_IN )
 	port map(
 		numer => std_logic_vector(K_1),
@@ -115,7 +115,7 @@ variable z : integer range 0 to 1;
 variable temp_N : unsigned(WIDTH_IN-1 downto 0):= (WIDTH_IN-1 downto 0 => '0');
 variable P : unsigned(WIDTH_IN-1 downto 0):= (WIDTH_IN-1 downto 0 => '0');
 variable R : unsigned(WIDTH_IN-1 downto 0):= (WIDTH_IN-1 downto 0 => '0');
-variable temp_K_1 : unsigned(WIDTH_IN-1 downto 0):= (WIDTH_IN-1 downto 0 => '0');
+variable temp_K_1 : unsigned(2*WIDTH_IN downto 0):= (2*WIDTH_IN downto 0 => '0');
 --variable temp_M : unsigned(WIDTH_IN-1 downto 0) := (WIDTH_IN-1 downto 0 => '0');
 variable temp_Exp : unsigned(WIDTH_IN-1 downto 0);
 
@@ -139,7 +139,7 @@ case state is
 	
 	when s0 =>
 	
-	temp_K_1 := shift_left(to_unsigned(2,WIDTH_IN),(2*WIDTH_IN));
+	temp_K_1 := shift_left(to_unsigned(1,2*WIDTH_IN+1),(2*WIDTH_IN));
 	
 	if(((to_integer(M)/=0) OR (to_integer(Exp)/=0)) AND (to_integer(temp_K_1)/= 0)) then
 		temp_M <= M;

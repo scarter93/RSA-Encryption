@@ -1,19 +1,19 @@
 proc AddWaves {} {
 	;#Add waves we're interested in to the Wave window
-    add wave -radix decimal -position end sim:/modular_exponentiation_tb/N_in
-    add wave -radix decimal -position end sim:/modular_exponentiation_tb/Exp_in
-    add wave -radix decimal -position end sim:/modular_exponentiation_tb/M_in
-    add wave -radix decimal -position end sim:/modular_exponentiation_tb/clk
-    add wave -radix decimal -position end sim:/modular_exponentiation_tb/reset_t
-    add wave -radix decimal -position end sim:/modular_exponentiation_tb/C_out
-    add wave -radix decimal -position end sim:/modular_exponentiation_tb/dut/state
-    add wave -radix decimal -position end sim:/modular_exponentiation_tb/dut/temp_M1
-    add wave -radix decimal -position end sim:/modular_exponentiation_tb/dut/latch_in
-    add wave -radix decimal -position end sim:/modular_exponentiation_tb/dut/temp_A1
-    add wave -radix decimal -position end sim:/modular_exponentiation_tb/dut/temp_B1
-    add wave -radix decimal -position end sim:/modular_exponentiation_tb/dut/sqr_mult/temp_N
-    add wave -radix decimal -position end sim:/modular_exponentiation_tb/dut/sqr_mult/count	
-    add wave -radix binary -position end sim:/modular_exponentiation_tb/dut/sqr_mult/temp_Exp	
+    add wave -radix unsigned -position end sim:/modular_exponentiation_tb/*
+    ;#add wave -radix unsigned -position end sim:/modular_exponentiation_tb/Exp_in
+    ;#add wave -radix unsigned -position end sim:/modular_exponentiation_tb/M_in
+    ;#add wave -radix unsigned -position end sim:/modular_exponentiation_tb/clk
+    ;#add wave -radix unsigned -position end sim:/modular_exponentiation_tb/reset_t
+    ;#add wave -radix unsigned -position end sim:/modular_exponentiation_tb/C_out
+    add wave -radix unsigned -position end sim:/modular_exponentiation_tb/dut/*
+    ;#add wave -radix unsigned -position end sim:/modular_exponentiation_tb/dut/temp_M1
+    ;#add wave -radix unsigned -position end sim:/modular_exponentiation_tb/dut/latch_in
+    ;#add wave -radix unsigned -position end sim:/modular_exponentiation_tb/dut/temp_A1
+    ;#add wave -radix unsigned -position end sim:/modular_exponentiation_tb/dut/temp_B1
+    add wave -radix unsigned -position end sim:/modular_exponentiation_tb/dut/sqr_mult/*
+    ;#add wave -radix unsigned -position end sim:/modular_exponentiation_tb/dut/sqr_mult/count	
+    ;#add wave -radix binary -position end sim:/modular_exponentiation_tb/dut/sqr_mult/temp_Exp	
   
 
 }
