@@ -13,8 +13,8 @@ simulation/
 work/
 *.wlf
 wlf*
-.mpf
-.mti
+*.mpf
+*.mti
 
 # modelsim history
 transcript
