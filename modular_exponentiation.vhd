@@ -115,7 +115,7 @@ variable z : integer range 0 to 1;
 variable temp_N : unsigned(WIDTH_IN-1 downto 0):= (WIDTH_IN-1 downto 0 => '0');
 variable P : unsigned(WIDTH_IN-1 downto 0):= (WIDTH_IN-1 downto 0 => '0');
 variable R : unsigned(WIDTH_IN-1 downto 0):= (WIDTH_IN-1 downto 0 => '0');
-variable temp_K_1 : unsigned(2*WIDTH_IN downto 0):= (2*WIDTH_IN downto 0 => '0');
+--variable temp_K_1 : unsigned(2*WIDTH_IN downto 0):= (2*WIDTH_IN downto 0 => '0');
 --variable temp_M : unsigned(WIDTH_IN-1 downto 0) := (WIDTH_IN-1 downto 0 => '0');
 variable temp_Exp : unsigned(WIDTH_IN-1 downto 0);
 
@@ -139,11 +139,11 @@ case state is
 	
 	when s0 =>
 	
-	temp_K_1 := shift_left(to_unsigned(1,2*WIDTH_IN+1),(2*WIDTH_IN));
+	K_1 <= shift_left(to_unsigned(1,2*WIDTH_IN+1),(2*WIDTH_IN));
 	
-	if(((to_integer(M)/=0) OR (to_integer(Exp)/=0)) AND (to_integer(temp_K_1)/= 0)) then
+	if(((to_integer(M)/=0) OR (to_integer(Exp)/=0))) then
 		temp_M <= M;
-		K_1 <= temp_K_1;
+		--K_1 <= temp_K_1;
 		temp_Exp := Exp;
 		temp_N := N;
 		state <= s1;
