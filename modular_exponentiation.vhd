@@ -210,20 +210,20 @@ case state is
 	
 	when s4 =>
 		latch_in <= '0';
-
-		if(temp_d_ready = '1') then
+		if(temp_Exp(WIDTH_IN -1) = '1') AND (temp_d_ready = '1') then
+			P := temp_M1;
+			temp_A1 <= P;
+			temp_B1 <= R;
+			latch_in <= '1';
+			state <= s5;
+		elsif(temp_Exp(WIDTH_IN -1) = '0') AND (temp_d_ready = '1') then	
+			--else 
+			P := temp_M1;
+			state <= s6;
+				--state <= s6;
 			
-			if(temp_Exp(WIDTH_IN -1) = '1') then
-				temp_A1 <= temp_M1;
-				temp_B1 <= R;
-				latch_in <= '1';
-				state <= s5;
-			else 
-				P := temp_M1;
-				state <= s6;
-			end if;
-		else
-			state <= s4;
+		--else
+			--state <= s4;
 		end if;
 	
 	
@@ -231,7 +231,7 @@ case state is
 		latch_in <= '0';
 
 		if(temp_d_ready = '1') then
-			P := temp_M1;
+			R := temp_M1;
 			state <= s6;
 		else
 			state <= s5;	

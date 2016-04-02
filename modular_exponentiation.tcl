@@ -14,7 +14,8 @@ proc AddWaves {} {
     add wave -radix unsigned -position end sim:/modular_exponentiation_tb/dut/sqr_mult/*
     ;#add wave -radix unsigned -position end sim:/modular_exponentiation_tb/dut/sqr_mult/count	
     ;#add wave -radix binary -position end sim:/modular_exponentiation_tb/dut/sqr_mult/temp_Exp	
-  
+    add wave -radix unsigned -position end sim:/modular_exponentiation_tb/dut/sqr_mult/P
+    add wave -radix unsigned -position end sim:/modular_exponentiation_tb/dut/sqr_mult/R   
 
 }
 
