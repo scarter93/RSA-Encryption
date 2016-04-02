@@ -87,7 +87,11 @@ Begin
 					state <= 1;
 				end if;
 			when 2 =>
-				M <= M_temp(WIDTH_IN-1 downto 0);
+				if( M_temp > N) then
+					M <= M_temp(WIDTH_IN-1 downto 0) - N;
+				else
+					M <= M_temp(WIDTH_IN-1 downto 0);
+				end if;
 				data_ready <= '1';
 				state <= 0;
 			when others =>

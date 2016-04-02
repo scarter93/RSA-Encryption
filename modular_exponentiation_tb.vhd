@@ -83,10 +83,10 @@ Begin
 	wait for 1 * clk_period;
 
 
-	REPORT "begin test case for a=9, b=7, N=143";
-	REPORT "expected output is 4 00001000";
-	N_in <= "00001001";
-	Exp_in <= "00000111";
+	REPORT "begin test case for a=48, b=103, N=143";
+	REPORT "expected output is 9 00001001";
+	N_in <= "00110000";
+	Exp_in <= "01100111";
 	M_in <= "10001111";
 	wait for 4 * clk_period;
 	--ASSERT(C_out = "00001000") REPORT "test passed" SEVERITY NOTE;
