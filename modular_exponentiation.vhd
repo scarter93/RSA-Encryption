@@ -162,8 +162,8 @@ case state is
 	
 		latch_in <= '1';
 		latch_in2 <= '1';
-		
 		state <= s2;
+	
 	else
 		state <= s1;
 	end if;
@@ -179,57 +179,37 @@ case state is
 		else
 			state <= s2;
 		end if;
-		
-	
---	if((to_integer(M)/=0) OR (to_integer(Exp)/=0)) then
---		temp_M <= M;
---		temp_Exp := Exp;
---		state <= s1;
---	else
---		state <= s0;
---	end if;
-	
---	when s1=>
---		if temp_Exp(WIDTH_IN-1) = '1' then
---			temp_N := N;
---			temp_Exp := (shift_left(temp_Exp, natural(1)));
---			count := count + 1;
---			state <= s2;
---		else
---			temp_N := to_unsigned(1, WIDTH_IN);				
---			temp_Exp := (shift_left(temp_Exp, natural(1)));
---			count := count + 1;
---			state <= s2;
---		end if;
 	
 	when s3 =>
 		temp_A1 <= P;
 		temp_B1 <= P;
 		latch_in <= '1';
 		state <= s4;
-	
+		
 	when s4 =>
 		latch_in <= '0';
-		if(temp_Exp(WIDTH_IN -1) = '1') AND (temp_d_ready = '1') then
-			P := temp_M1;
-			temp_A1 <= P;
-			temp_B1 <= R;
+	if(temp_d_ready = '1')then
+		P := temp_M1;
+		if(temp_Exp(WIDTH_IN -1) = '1')then
+			temp_A1 <= R;
+			temp_B1 <= P;
 			latch_in <= '1';
 			state <= s5;
-		elsif(temp_Exp(WIDTH_IN -1) = '0') AND (temp_d_ready = '1') then	
+		elsif(temp_Exp(WIDTH_IN -1) = '0')then	
 			--else 
-			P := temp_M1;
+			--P := temp_M1;
 			state <= s6;
+		end if;			
 				--state <= s6;
 			
-		--else
-			--state <= s4;
-		end if;
+	else
+		state <= s4;
+	end if;
 	
 	
 	when s5 => 
+		
 		latch_in <= '0';
-
 		if(temp_d_ready = '1') then
 			R := temp_M1;
 			state <= s6;
@@ -243,7 +223,8 @@ case state is
 			temp_A1 <= to_unsigned(1,WIDTH_IN);
 			temp_B1 <= R;
 			latch_in <= '1';
-			state <= s7;	
+			state <= s7;
+			
 		else
 			temp_Exp := (shift_left(temp_Exp, natural(1)));
 			count := count + 1;
@@ -253,6 +234,7 @@ case state is
 	when s7 =>
 		latch_in <= '0';
 		if(temp_d_ready = '1') then
+			
 			temp_C <= temp_M1;
 		else
 			state <= s7;
