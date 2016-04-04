@@ -23,6 +23,11 @@ def main():
     b = 103
     n = 143
 
+    # online example https://www.cs.utexas.edu/~mitra/honors/soln.html
+    #a = 2
+    #b = 7
+    #n = 33
+
     # new example
     # a = 2 # encrypt
     # b = 7
@@ -73,7 +78,7 @@ def mod_mult(a,b,N):
 
     if (S > N):
         S -= N
-    print("S = " + str(S))
+    #print("S = " + str(S))
     return S
 
 
@@ -84,20 +89,30 @@ def mod_exp(C,d,n):
     #d = conv(d, n)
     k = num_bits(n)
     print("c: " + str(C) + " d: " + str(d))
+    print("k bits: " + str(k))
 
     mask = 0b00000001
     K = int(2**(2*k) % n)
+    print("K: " + str(K))
     # K = conv(K, n)
     P_old = mod_mult(K,C,n)
+    print("P_old: " + str(P_old))
     R = mod_mult(K,1,n)
+    print("R_old: " + str(R))
     # print("P_old: " + str(P_old) + " R: " + str(R))
     
     for i in range(num_bits(d)):
+        print("number of bits: " + str(num_bits(d)))
+        print("d: " + str(d))    
         P = mod_mult(P_old,P_old,n)
+        print("P: " + str(P) + " P_old: " + str(P_old))
         if (mask & d) == 1:
+            print("R_old: " + str(R))    
             R = mod_mult(R,P_old,n)
+            print("R: " + str(R))
         d = d >> 1
         P_old = P
+    print("computing final result")
     M = mod_mult(1,R,n)
     return M
 

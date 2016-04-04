@@ -77,9 +77,10 @@ Begin
 
 	REPORT "begin test case for a=9 (A=16), b=7 (B=76), N=143";
 	REPORT "expected output is 112 01110000";
-	A_in   <= "01001100";
-	B_in   <= "01001100";
-	--A_in <= "00010000";
+	--A_in   <= "01001100";
+	--B_in   <= "01001100";
+	A_in <= "00010000";
+	B_in <= "00010000";
 	--B_in <= "01001100";
 	N_in <= "10001111";
 	latch_in <= '1';

@@ -46,9 +46,9 @@ Signal reset_t : std_logic := '0';
 Signal C_out : unsigned(WIDTH_IN-1 downto 0) := (WIDTH_IN-1 downto 0 => '0');
 --signal c_out : std_logic;
 
-CONSTANT NUM_12 : unsigned(WIDTH_IN-1 downto 0) := "00001100";
-CONSTANT NUM_2	: unsigned(WIDTH_IN-1 downto 0) := "00001010";
-CONSTANT N_5	: unsigned(WIDTH_IN-1 downto 0) := "00000101";
+--CONSTANT NUM_12 : unsigned(WIDTH_IN-1 downto 0) := "00001100";
+--CONSTANT NUM_2	: unsigned(WIDTH_IN-1 downto 0) := "00001010";
+--CONSTANT N_5	: unsigned(WIDTH_IN-1 downto 0) := "00000101";
 
 
 Begin
@@ -85,9 +85,13 @@ Begin
 
 	REPORT "begin test case for a=48, b=103, N=143";
 	REPORT "expected output is 9 00001001";
+	--N_in <= "00011101";
+	--N_in <= "00001001";
+	--Exp_in <= "00000111";
 	N_in <= "00110000";
 	Exp_in <= "01100111";
 	M_in <= "10001111";
+	--M_in <= "00100001";
 	wait for 4 * clk_period;
 	--ASSERT(C_out = "00001000") REPORT "test passed" SEVERITY NOTE;
 	--ASSERT(C_out /= "00001000") REPORT "test failed" SEVERITY ERROR;

@@ -4,15 +4,17 @@
 -- Date: March 8th, 2016
 -- Description:
 
+----------------------------------------------------------
+-- Not sure if the variables need to be reset, 
+-- I think they get reset every time we access the process
+----------------------------------------------------------
+
 library ieee;
 use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
 
 library lpm;
 use lpm.lpm_components.all;
---use IEEE.std_logic_arith.all;
---use IEEE.std_logic_unsigned.all;
---use work.mod_exp_package.all;
 
 
 entity modular_exponentiation is
@@ -22,11 +24,9 @@ entity modular_exponentiation is
 	port(	N :	  in unsigned(WIDTH_IN-1 downto 0); --Number
 		Exp :	  in unsigned(WIDTH_IN-1 downto 0); --Exponent
 		M :	  in unsigned(WIDTH_IN-1 downto 0); --Modulus
-		--latch_in: in std_logic;
 		clk :	  in std_logic;
 		reset :	  in std_logic;
 		C : 	  out unsigned(WIDTH_IN-1 downto 0) --Output
-		--C : out std_logic
 	);
 end entity;
 
@@ -41,13 +41,12 @@ signal temp_M1, temp_M2 : unsigned(WIDTH_IN-1 downto 0) := (WIDTH_IN-1 downto 0 
 signal latch_in, latch_in2 : std_logic := '0';
 
 signal temp_M : unsigned(WIDTH_IN-1 downto 0) := (WIDTH_IN-1 downto 0 => '0');
---signal temp_Exp : unsigned(WIDTH_IN-1 downto 0);
 signal temp_C : unsigned(WIDTH_IN-1 downto 0):= (WIDTH_IN-1 downto 0 => '0');
---signal temp_C : std_logic;
+
 signal K_1 : unsigned(2*WIDTH_IN downto 0) := (others => '0');
 signal K : std_logic_vector (WIDTH_IN-1 downto 0) := (others => '0');
 
-type STATE_TYPE is (s0, s1, s2, s3, s4, s5, s6, s7);
+type STATE_TYPE is (s0, s1, s2, s3, s4, s5, s6, s7, s8, s9, s10);
 signal state: STATE_TYPE := s0;
 
 component montgomery_multiplier
@@ -108,50 +107,45 @@ C <= temp_C;
 
 sqr_mult : Process(clk, reset, N, Exp, M)
 
-variable index : integer := 0;
 variable count : integer := 0;
-variable y : integer range 0 to 3;
-variable z : integer range 0 to 1;
+variable shift_count : integer := 0;
 variable temp_N : unsigned(WIDTH_IN-1 downto 0):= (WIDTH_IN-1 downto 0 => '0');
 variable P : unsigned(WIDTH_IN-1 downto 0):= (WIDTH_IN-1 downto 0 => '0');
 variable R : unsigned(WIDTH_IN-1 downto 0):= (WIDTH_IN-1 downto 0 => '0');
---variable temp_K_1 : unsigned(2*WIDTH_IN downto 0):= (2*WIDTH_IN downto 0 => '0');
---variable temp_M : unsigned(WIDTH_IN-1 downto 0) := (WIDTH_IN-1 downto 0 => '0');
 variable temp_Exp : unsigned(WIDTH_IN-1 downto 0);
+variable temp_mod : unsigned(WIDTH_IN-1 downto 0);
 
 begin
 
 if reset = '1' then
-
---		--temp_N <= (others => '0');
---		temp_A1 <= (others => '0');
---		temp_B1 <= (others => '0');
---		temp_A2 <= (others => '0');
---		temp_B2 <= (others => '0');
---		temp_M <= (others => '0');
---		temp_M1 <= (others => '0');
---		temp_M2 <= (others => '0');
---		temp_C <= (others => '0');	
-		--temp_C <= '0';
+	temp_M <= (others => '0');
+	temp_C <= (others => '0');	
 elsif rising_edge(clk) then
 
 case state is 
 	
 	when s0 =>
 	
-	K_1 <= shift_left(to_unsigned(1,2*WIDTH_IN+1),(2*WIDTH_IN));
-	
 	if(((to_integer(M)/=0) OR (to_integer(Exp)/=0))) then
-		temp_M <= M;
-		--K_1 <= temp_K_1;
-		temp_Exp := Exp;
-		temp_N := N;
+		temp_mod := M;
 		state <= s1;
-	else
-		state <= s0;
 	end if;
 
-	when s1 => 
+	when s1 =>
+	
+	if(temp_mod(WIDTH_IN-1) = '1')then	
+		K_1 <= shift_left(to_unsigned(1,2*WIDTH_IN+1),(2*(WIDTH_IN-shift_count)));
+		temp_Exp := Exp;
+		temp_M <= M;
+		temp_N := N;
+		state <= s2;
+	else
+		temp_mod := (shift_left(temp_mod,natural(1)));
+		shift_count := shift_count + 1;
+		state <= s1;
+	end if;
+
+	when s2 => 
 	
 	if(to_integer(unsigned(K)) /= 0)then
 		temp_A1 <= unsigned(K);
@@ -162,85 +156,82 @@ case state is
 	
 		latch_in <= '1';
 		latch_in2 <= '1';
-		state <= s2;
+		state <= s3;
 	
 	else
-		state <= s1;
+		state <= s2;
 	end if;
 
-	when s2 =>
+	when s3 =>
 	latch_in <= '0';
 	latch_in2 <= '0';
 	
-		if((temp_d_ready = '1') AND (temp_d_ready2 = '1')) then
-			P := temp_M1;
-			R := temp_M2;
-			state <= s3;
-		else
-			state <= s2;
-		end if;
+	if((temp_d_ready = '1') AND (temp_d_ready2 = '1')) then
+		P := temp_M1;
+		R := temp_M2;
+		state <= s4;
+	end if; 
 	
-	when s3 =>
+	when s4 =>
 		temp_A1 <= P;
 		temp_B1 <= P;
 		latch_in <= '1';
-		state <= s4;
-		
-	when s4 =>
-		latch_in <= '0';
-	if(temp_d_ready = '1')then
-		P := temp_M1;
-		if(temp_Exp(WIDTH_IN -1) = '1')then
-			temp_A1 <= R;
-			temp_B1 <= P;
-			latch_in <= '1';
+		if(temp_d_ready = '0')then
 			state <= s5;
-		elsif(temp_Exp(WIDTH_IN -1) = '0')then	
-			--else 
-			--P := temp_M1;
-			state <= s6;
-		end if;			
-				--state <= s6;
-			
-	else
-		state <= s4;
-	end if;
-	
-	
-	when s5 => 
-		
-		latch_in <= '0';
-		if(temp_d_ready = '1') then
-			R := temp_M1;
-			state <= s6;
-		else
-			state <= s5;	
 		end if;
-				
-	when s6 =>
-		if count = WIDTH_IN-1 then
-				--temp_C <= temp_M1;
-			temp_A1 <= to_unsigned(1,WIDTH_IN);
-			temp_B1 <= R;
-			latch_in <= '1';
+
+	when s5 =>
+	latch_in <= '0';
+	
+	if(temp_d_ready = '1')then
+		if(temp_Exp(0) = '1')then
+			state <= s6;
+		else
+			P := temp_M1;
+			state <= s8;
+		end if;
+	end if;
+
+	when s6 => 
+		temp_A2 <= R;
+		temp_B2 <= P;
+		latch_in2 <= '1';
+		if(temp_d_ready2 = '0')then
 			state <= s7;
+		end if;
+		
+	when s7 =>
+		latch_in2 <= '0';
+		if(temp_d_ready2 = '1') then
+			P := temp_M1;
+			R := temp_M2;
+			state <= s8;
+		end if;
+	
+	when s8 =>
+		if (count = (WIDTH_IN-1)-shift_count) then			
+			state <= s9;
 			
 		else
-			temp_Exp := (shift_left(temp_Exp, natural(1)));
+			temp_Exp := (shift_right(temp_Exp, natural(1)));
 			count := count + 1;
-			state <= s3;
+			state <= s4;
 		end if;	
 	
-	when s7 =>
+	when s9 =>
+		temp_A1 <= to_unsigned(1,WIDTH_IN);
+		temp_B1 <= R;
+		latch_in <= '1';
+		if(temp_d_ready ='0')then
+			state <= s10;
+		end if;
+
+	when s10 =>
 		latch_in <= '0';
 		if(temp_d_ready = '1') then
-			
 			temp_C <= temp_M1;
-		else
-			state <= s7;
 		end if;
-			
-		--state <= s0;
+
 	end case;
 end if;		
 
