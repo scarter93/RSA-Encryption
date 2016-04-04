@@ -94,10 +94,12 @@ mont_mult_2: montgomery_multiplier
 divide: LPM_DIVIDE
 	generic map( 
 		LPM_WIDTHN => 2*WIDTH_IN+1,
-		LPM_WIDTHD => WIDTH_IN )
+		LPM_WIDTHD => WIDTH_IN,
+		LPM_PIPELINE => 2*WIDTH_IN+1 )
 	port map(
 		numer => std_logic_vector(K_1),
 		denom => std_logic_vector(temp_M),
+		clock => clk,
 		remain => K
 		);
 
