@@ -32,7 +32,7 @@ Component montgomery_multiplier is
 	);
 end component;
 
-CONSTANT WIDTH_IN : integer := 8;
+CONSTANT WIDTH_IN : integer := ${DATA_WIDTH};
 
 CONSTANT clk_period : time := 1 ns;
 
@@ -45,9 +45,6 @@ Signal reset_t : std_logic := '0';
 Signal latch_in : std_logic := '0';
 
 Signal M_out : unsigned(WIDTH_IN-1 downto 0) := (others => '0');
-CONSTANT NUM_12 : unsigned(WIDTH_IN-1 downto 0) := "00010010";
-CONSTANT NUM_2	: unsigned(WIDTH_IN-1 downto 0) := "00000001";
-CONSTANT N_5	: unsigned(WIDTH_IN-1 downto 0) := "00000101";
 
 Begin
 -- device under test

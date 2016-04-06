@@ -3,16 +3,23 @@
 This can test the two main components of the project,
 the Montgomery Modular Multiplier and the Modular
 Exponentiator.
+
+Encryption: m^e (mod n) = c
+Decryption: c^d (mod n) = m
 """
 
 __author__ = "Jacob Barnett"
 __contact__ = "jacob.barnett@mail.mcgill.ca"
 __date__ = "April 5, 2016"
 
-# package imports
-import rsa
+# stlib imports
 import time
 import sys
+import re
+import fileinput
+
+# package imports
+import rsa
 
 # local imports
 import common
@@ -25,10 +32,11 @@ modular_exponentiation = "ME"
 montgomery_multiplication = "MM"
 
 # Options variables
-data_width = 32
+data_width = 64
 num_tests = 5
 
 def main():
+	generateTB(montgomery_multiplication)
 	generateTB(modular_exponentiation)
 
 def generateTB(choice):
@@ -47,17 +55,19 @@ def generateTB(choice):
 	
 
 	replacements = {
-		key_data_width : 16,
+		key_data_width : data_width,
 		key_date : time.strftime("%B %d, %Y"),
 		key_body : body_str
 	}
 
 	if choice == montgomery_multiplication:
-		file_str = "montgomery_multiplier_tb_gen.vhd"
+		file_str = "../montgomery_multiplier_tb.vhd"
 		temp_str = "mm_tb_template.vhd"
+		tcl_str = "../montgomery_multiplier_tb.tcl"
 	else:
-		file_str = "modular_exponentiation_tb_gen.vhd"
+		file_str = "../modular_exponentiation_tb.vhd"
 		temp_str = "me_tb_template.vhd"
+		tcl_str = "../modular_exponentiation.tcl"
 
 	with open(file_str, "wt") as fout:
 		with open(temp_str, "rt") as fin:
@@ -66,6 +76,11 @@ def generateTB(choice):
 					line = line.replace(key, str(value))
 				fout.write(line)
 
+	run_time = num_tests * waitTime(data_width, choice)
+
+	for line in fileinput.input(tcl_str, inplace=True, backup = ".bak"):
+			print re.sub(r"run \d+ns", "run %(run_time)dns" % locals(), line),
+
 
 # Generate a test for Moduar Exponentiation
 def createTestStringME(base, exp, mod, bits):
@@ -73,8 +88,7 @@ def createTestStringME(base, exp, mod, bits):
 	exp_b = binaryString(exp, bits)
 	mod_b = binaryString(mod, bits)
 
-	# worst case = bit counting + division + #bits multiplications, eachbits+1
-	wait_time = bits + (2*bits+1) + 2*(bits+1)*bits
+	wait_time = waitTime(bits, modular_exponentiation)
 
 	m_res = common.mod_exp(base, exp, mod)
 	m_res_b = binaryString(m_res, bits)
@@ -97,7 +111,7 @@ def createTestStringMM(a, b, n, bits):
 	B_b = binaryString(B, bits)
 	n_b = binaryString(n, bits)
 
-	wait_time = bits + 1
+	wait_time = waitTime(bits, montgomery_multiplication)
 
 	m_res = common.mont_result(a, b, n)
 	m_res_b = binaryString(m_res, bits)
@@ -117,6 +131,13 @@ def createTestStringMM(a, b, n, bits):
 
 def binaryString(x, bits):
 	return format(x, '0' + str(bits) +  'b')
+
+def waitTime(bits, choice):
+	if choice == montgomery_multiplication:
+		return bits + 1
+	else:
+		# worst case = bit counting + division + #bits multiplications, eachbits+1
+		return bits + (2*bits+1) + 2*(bits+1)*bits
 
 if __name__ == "__main__":
 	main()
