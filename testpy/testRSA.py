@@ -25,32 +25,11 @@ modular_exponentiation = "ME"
 montgomery_multiplication = "MM"
 
 # Options variables
-data_width = 16
+data_width = 32
 num_tests = 5
 
 def main():
 	generateTB(modular_exponentiation)
-
-def createTestStringME(a, b, n, bits):
-	a_b = binaryString(a, bits)
-	b_b = binaryString(b, bits)
-	n_b = binaryString(n, bits)
-
-	wait_time = bits + 1
-
-	m_res = common.mod_exp(a, b, n)
-	m_res_b = binaryString(m_res, bits)
-
-	return ("\tREPORT \"Begin test case for a=%(a)d, b=%(b)d, N=%(n)d\";\n"
-			"\tREPORT \"Expected output is %(m_res)d, %(m_res_b)s\";\n"
-			"\tM_in <= \"%(a_b)s\";\n"
-			"\tExp_in <= \"%(b_b)s\";\n"
-			"\tN_in <= \"%(n_b)s\";\n"
-			"\twait for %(wait_time)d * clk_period;\n"
-			"\tASSERT(C_out = \"%(m_res_b)s\") REPORT \"test failed\" SEVERITY NOTE;\n\n"
-			% locals())
-
-# generators for testing Mod mult
 
 def generateTB(choice):
 
@@ -87,6 +66,30 @@ def generateTB(choice):
 					line = line.replace(key, str(value))
 				fout.write(line)
 
+
+# Generate a test for Moduar Exponentiation
+def createTestStringME(base, exp, mod, bits):
+	base_b = binaryString(base, bits)
+	exp_b = binaryString(exp, bits)
+	mod_b = binaryString(mod, bits)
+
+	# worst case = bit counting + division + #bits multiplications, eachbits+1
+	wait_time = bits + (2*bits+1) + 2*(bits+1)*bits
+
+	m_res = common.mod_exp(base, exp, mod)
+	m_res_b = binaryString(m_res, bits)
+
+	return ("\tREPORT \"Begin test case for base=%(base)d, exp=%(exp)d, mod=%(mod)d\";\n"
+			"\tREPORT \"Expected output is %(m_res)d, %(m_res_b)s\";\n"
+			"\tN_in <= \"%(base_b)s\";\n"
+			"\tExp_in <= \"%(exp_b)s\";\n"
+			"\tM_in <= \"%(mod_b)s\";\n"
+			"\twait for %(wait_time)d * clk_period;\n"
+			"\tASSERT(C_out = \"%(m_res_b)s\") REPORT \"test failed\" SEVERITY NOTE;\n\n"
+			% locals())
+
+
+# Generate a test for Montgomery Modular Multiplier
 def createTestStringMM(a, b, n, bits):
 	A = common.conv(a, n)
 	A_b = binaryString(A, bits)
