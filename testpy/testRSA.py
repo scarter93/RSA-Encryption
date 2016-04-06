@@ -32,19 +32,19 @@ modular_exponentiation = "ME"
 montgomery_multiplication = "MM"
 
 # Options variables
-data_width = 64
-num_tests = 5
+data_width = 1024
+num_tests = 10
 
 def main():
 	generateTB(montgomery_multiplication)
-	generateTB(modular_exponentiation)
+	# generateTB(modular_exponentiation)
 
 def generateTB(choice):
 
 	body_str = ""
 	for i in range(1, num_tests):
-		(pubkey, privkey) = rsa.newkeys(data_width-1)
-		m = rsa.randnum.randint(2**(data_width-3))
+		(pubkey, privkey) = rsa.newkeys(data_width)
+		m = rsa.randnum.randint(2**(data_width-1))
 		if choice == montgomery_multiplication:
 			body_str += createTestStringMM(m, pubkey.e, pubkey.n, data_width)
 		else:
