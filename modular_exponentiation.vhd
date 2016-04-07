@@ -32,6 +32,7 @@ end entity;
 
 architecture behavior of modular_exponentiation is 
 
+constant zero : unsigned(WIDTH_IN-1 downto 0) := (others => '0');
 
 signal temp_A1,temp_A2 : unsigned(WIDTH_IN-1 downto 0) := (WIDTH_IN-1 downto 0 => '0');
 signal temp_B1, temp_B2 : unsigned(WIDTH_IN-1 downto 0) := (WIDTH_IN-1 downto 0 => '0');
@@ -120,17 +121,29 @@ variable temp_mod : unsigned(WIDTH_IN-1 downto 0);
 begin
 
 if reset = '1' then
+	count := 0;
+	shift_count := 0;
+	temp_N := (others => '0');
+	P := (others => '0');
+	R := (others => '0');
+	temp_Exp := (others => '0');
+	temp_mod := (others => '0');	
 	temp_M <= (others => '0');
-	temp_C <= (others => '0');	
+	K_1 <= (others => '0');	
+
+	state <= s0;
+	
 elsif rising_edge(clk) then
 
 case state is 
 	
 	when s0 =>
 	
-	if(((to_integer(M)/=0) OR (to_integer(Exp)/=0))) then
+	if((M > zero) AND (Exp > zero) AND (N > zero)) AND ((temp_M /= M) OR (temp_Exp /= Exp) OR (temp_N /= N)) then
 		temp_mod := M;
 		state <= s1;
+	else
+		state <= s0;
 	end if;
 
 	when s1 =>
@@ -149,7 +162,7 @@ case state is
 
 	when s2 => 
 	
-	if(to_integer(unsigned(K)) /= 0)then
+	if(unsigned(K) > zero)then
 		temp_A1 <= unsigned(K);
 		temp_B1 <= temp_N;
 	
@@ -158,8 +171,10 @@ case state is
 	
 		latch_in <= '1';
 		latch_in2 <= '1';
-		state <= s3;
-	
+		
+		if(temp_d_ready = '0') AND (temp_d_ready2 = '0')then
+			state <= s3;
+		end if;
 	else
 		state <= s2;
 	end if;
@@ -232,7 +247,24 @@ case state is
 		latch_in <= '0';
 		if(temp_d_ready = '1') then
 			temp_C <= temp_M1;
+			
+			count := 0;
+			shift_count := 0;
+			--temp_N := (others => '0');
+			P := (others => '0');
+			R := (others => '0');
+			--temp_Exp := (others => '0');
+			temp_mod := (others => '0');	
+			--temp_M <= (others => '0');
+			K_1 <= (others => '0');		
+			
+			state <= s0;
 		end if;
+		
+		
+		--temp_M <= (others => '0');
+		--temp_C <= (others => '0');
+		--K_1 <= (others => '0');	
 
 	end case;
 end if;		
