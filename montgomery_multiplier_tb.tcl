@@ -45,5 +45,5 @@ force -deposit clk 0 0 ns, 1 0.5 ns -repeat 1 ns
 
 
 ;# Run for 100 ns
-run 10250ns
+run 330ns
 

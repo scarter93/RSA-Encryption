@@ -15,6 +15,7 @@ work/
 wlf*
 *.mpf
 *.mti
+*.do
 
 # modelsim history
 transcript

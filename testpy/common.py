@@ -36,7 +36,7 @@ def mod_mult(a,b,N):
 
     if (S > N):
         S -= N
-    #print("S = " + str(S))
+    print("S = " + str(S))
     return S
 
 
@@ -51,7 +51,7 @@ def mod_exp(C,d,n):
 
     mask = 0b00000001
     K = int(2**(2*k) % n)
-    # print("K: " + str(K))
+    #print("K: " + str(K))
     # K = conv(K, n)
     P_old = mod_mult(K,C,n)
     # print("P_old: " + str(P_old))
@@ -60,17 +60,18 @@ def mod_exp(C,d,n):
     # print("P_old: " + str(P_old) + " R: " + str(R))
     
     for i in range(num_bits(d)):
-        # print("number of bits: " + str(num_bits(d)))
-        # print("d: " + str(d))    
+        #print("number of bits: " + str(num_bits(d)))
+        #print("d: " + str(d))
+        print("computing P")    
         P = mod_mult(P_old,P_old,n)
-        # print("P: " + str(P) + " P_old: " + str(P_old))
+        print("P: " + str(P) + " P_old: " + str(P_old))
         if (mask & d) == 1:
-            # print("R_old: " + str(R))    
+            print("R_old: " + str(R))    
             R = mod_mult(R,P_old,n)
-            # print("R: " + str(R))
+            print("R: " + str(R))
         d = d >> 1
         P_old = P
-    # print("computing final result")
+    print("computing final result")
     M = mod_mult(1,R,n)
     return M
 
