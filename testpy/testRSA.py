@@ -37,7 +37,7 @@ num_tests = 100
 
 def main():
 	generateTB(montgomery_multiplication)
-	generateTB(modular_exponentiation)
+	# generateTB(modular_exponentiation)
 
 def generateTB(choice):
 
@@ -46,7 +46,7 @@ def generateTB(choice):
 		(pubkey, privkey) = rsa.newkeys(data_width)
 		m = rsa.randnum.randint(2**(data_width-1))
 		if choice == montgomery_multiplication:
-			body_str += createTestStringMM(m, pubkey.e, pubkey.n, data_width)
+			body_str += createTestStringMM(m, m, pubkey.n, data_width)
 		else:
 			body_str += createTestStringME(m, pubkey.e, pubkey.n, data_width)
 			encrypted = rsa.core.encrypt_int(m, pubkey.e, pubkey.n)

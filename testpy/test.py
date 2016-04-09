@@ -19,10 +19,13 @@ def main():
     #n = 143
 
     # basic decryption example
-    a = 48
-    b = 103
-    n = 143
+    #a = 48
+    #b = 103
+    #n = 143
 
+    a = 1094051021    
+    b = 65537
+    n = 3322225339
     # online example https://www.cs.utexas.edu/~mitra/honors/soln.html
     #a = 2
     #b = 7
@@ -48,9 +51,9 @@ def main():
     # #test
     # a = 55
     # b = 65537
-    n = 555427658531
-    a = 365122258834
-    b = 126513109889
+    #n = 555427658531
+    #a = 365122258834
+    #b = 126513109889
 
 
     print("result: " + str(common.mod_exp(a, b, n)))
