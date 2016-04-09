@@ -37,7 +37,7 @@ num_tests = 100
 
 def main():
 	generateTB(montgomery_multiplication)
-	# generateTB(modular_exponentiation)
+	generateTB(modular_exponentiation)
 
 def generateTB(choice):
 
