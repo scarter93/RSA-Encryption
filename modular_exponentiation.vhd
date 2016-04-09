@@ -19,7 +19,7 @@ use lpm.lpm_components.all;
 
 entity modular_exponentiation is
 
-	generic(WIDTH_IN : integer := 8
+	generic(WIDTH_IN : integer := 128
 	);
 	port(	N :	  in unsigned(WIDTH_IN-1 downto 0); --Number
 		Exp :	  in unsigned(WIDTH_IN-1 downto 0); --Exponent
@@ -35,6 +35,9 @@ architecture behavior of modular_exponentiation is
 constant zero : unsigned(WIDTH_IN-1 downto 0) := (others => '0');
 signal one : unsigned(WIDTH_IN-1 downto 0);
 
+
+constant K : unsigned (WIDTH_IN-1 downto 0) := "01010110000011111111111011010011010101100101010111100001110011001110110111000001111011011000011011000010010111101001000101000001"; --change to std_logic_vector
+
 signal temp_A1,temp_A2 : unsigned(WIDTH_IN-1 downto 0) := (WIDTH_IN-1 downto 0 => '0');
 signal temp_B1, temp_B2 : unsigned(WIDTH_IN-1 downto 0) := (WIDTH_IN-1 downto 0 => '0');
 signal temp_d_ready, temp_d_ready2 : std_logic := '0';
@@ -46,7 +49,7 @@ signal temp_M : unsigned(WIDTH_IN-1 downto 0) := (WIDTH_IN-1 downto 0 => '0');
 signal temp_C : unsigned(WIDTH_IN-1 downto 0):= (WIDTH_IN-1 downto 0 => '0');
 
 signal K_1 : unsigned(2*WIDTH_IN downto 0) := (others => '0');
-signal K : std_logic_vector (WIDTH_IN-1 downto 0) := (others => '0'); --change to std_logic_vector
+--signal K : unsigned (WIDTH_IN-1 downto 0) := (others => '0'); --change to std_logic_vector
 
 type STATE_TYPE is (s0, s1, s2, s3, s4, s5, s6, s7, s8, s9, s10);
 signal state: STATE_TYPE := s0;
@@ -95,21 +98,20 @@ mont_mult_2: montgomery_multiplier
 		M => temp_M2 
 		);
 
-divide: LPM_DIVIDE
-	generic map( 
-		LPM_WIDTHN => 2*WIDTH_IN+1,
-		LPM_WIDTHD => WIDTH_IN,
-		LPM_PIPELINE => 2*WIDTH_IN+1 )
-	port map(
-		numer => std_logic_vector(K_1),
-		denom => std_logic_vector(temp_M),
-		clock => clk,
-		remain => K
-		);
+--divide: LPM_DIVIDE
+--	generic map( 
+--		LPM_WIDTHN => 2*WIDTH_IN+1,
+--		LPM_WIDTHD => WIDTH_IN,
+--		LPM_PIPELINE => 2*WIDTH_IN+1 )
+--	port map(
+--		numer => std_logic_vector(K_1),
+--		denom => std_logic_vector(temp_M),
+--		clock => clk,
+--		remain => K
+--		);
+--
 
 
-
---K <= K_1 mod temp_M;
 
 C <= temp_C;
 
