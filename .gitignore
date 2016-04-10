@@ -1,3 +1,6 @@
+# quartus backup files
+*.bak
+
 # database files for quartus
 db/
 incremental_db/
@@ -10,9 +13,12 @@ simulation/
 work/
 *.wlf
 wlf*
+*.mpf
+*.mti
+*.do
 
 # modelsim history
 transcript
 
-# Quartus backup files
-*.bak
+# compiled python files
+*.pyc

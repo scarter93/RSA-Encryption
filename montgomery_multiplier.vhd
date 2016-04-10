@@ -26,7 +26,7 @@ end entity;
 
 architecture behavioral of montgomery_multiplier is
 
-Signal M_temp : unsigned(WIDTH_IN downto 0) := (others => '0');
+Signal M_temp : unsigned(WIDTH_IN+1 downto 0) := (others => '0');
 Signal temp : unsigned(WIDTH_IN downto 0) := (others => '0');
 Signal temp_s : unsigned(WIDTH_IN downto 0) := (others => '0'); 
 --Signal B_i : integer := 0;
@@ -39,14 +39,15 @@ Signal B_zeros : unsigned(WIDTH_IN-1 downto 0) := (others => '0');
 Signal N_temp : unsigned(WIDTH_IN-1 downto 0);
 Signal q : integer := 0;
 
+signal test_cnt : integer := WIDTH_IN;
+
 Begin
-
-
 compute_M : Process(clk,latch,reset)
 Begin
 	if reset = '0' and rising_edge(clk) then
 		case state is
 			when 0 =>
+
 				if latch = '1' then
 					data_ready <= '0';
 					M_temp <= (others => '0');
@@ -58,7 +59,7 @@ Begin
 					state <= 1;
 				end if;
 			when 1 =>
-				
+				test_cnt <= test_cnt-1;
 				--q <= (to_integer( unsigned'( "" & M_temp(0))) + to_integer( unsigned'( "" & A_reg(0)))*to_integer( unsigned'( "" & B_reg(0)))) MOD 2;
 				--q <= (to_integer( unsigned'("0000000" & M_temp(0))) + to_integer(unsigned'("0000000" & A_reg(0)))*to_integer(unsigned'("0000000" & B_reg(0)))) MOD 2;
 				if A_reg(0) = '1' then
@@ -67,6 +68,7 @@ Begin
 						M_temp <= unsigned(shift_right(unsigned(M_temp + B_reg + N), integer(1)));
 					else
 						M_temp <= unsigned(shift_right(unsigned(M_temp + B_reg), integer(1)));
+
 					end if;
 				else
 
@@ -77,21 +79,22 @@ Begin
 					end if;
 				end if;
 				--M_temp <= (M_temp + unsigned'("" & A_reg(0))*B_reg + to_unsigned((to_integer( unsigned'("0000000" & M_temp(0))) + to_integer(unsigned'("0000000" & A_reg(0)))*to_integer(unsigned'("0000000" & B_reg(0)))) MOD 2, 1)*N)/2;
-				N_temp <= unsigned(shift_right(unsigned(N_temp), integer(1)));
-				A_reg <= unsigned(shift_right(unsigned(A_reg), integer(1)));
 				if N_temp = to_unsigned(integer(1), WIDTH_IN) then
 					state <= 2;
 				else
 					--count <= count + 1;
 					state <= 1;
 				end if;
+	
+				N_temp <= unsigned(shift_right(unsigned(N_temp), integer(1)));
+				A_reg <= unsigned(shift_right(unsigned(A_reg), integer(1)));
+				
 			when 2 =>
 				if( M_temp > N) then
 					M <= M_temp(WIDTH_IN-1 downto 0) - N;
 				else
 					M <= M_temp(WIDTH_IN-1 downto 0);
 				end if;
-				--M_temp <= B_zeros & '0';
 				data_ready <= '1';
 				state <= 0;
 			when others =>
