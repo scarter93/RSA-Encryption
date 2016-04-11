@@ -7,8 +7,50 @@ __contact__ = "jacob.barnett@mail.mcgill.ca"
 __date__ = "April 5, 2016"
 
 import math
+
+
+def mod_mult(a, b, N):
+	return (a * b) % N
+
+def mod_exp_compare(C,d,n):
+
+    # C = conv(C, n)
+    #d = conv(d, n)
+    k = num_bits(n)
+    # print("c: " + str(C) + " d: " + str(d))
+    # print("k bits: " + str(k))
+
+    mask = 0b00000001
+    K = int(2**(2*k) % n)
+    #print("K: " + str(K))
+    # K = conv(K, n)
+    P_old = C
+    # print("P_old: " + str(P_old))
+    R = 1
+    # print("R_old: " + str(R))
+    # print("P_old: " + str(P_old) + " R: " + str(R))
+    
+    for i in range(num_bits(d)):
+        #print("number of bits: " + str(num_bits(d)))
+        #print("d: " + str(d))
+        # print("computing P")    
+        P = mod_mult(P_old,P_old,n)
+        # print("P: " + str(P) + " P_old: " + str(P_old))
+        if (mask & d) == 1:
+            # print("R_old: " + str(R))    
+            R = mod_mult(R,P_old,n)
+            # print("R: " + str(R))
+        d = d >> 1
+        P_old = P
+    # print("computing final result")
+    # M = mont_mult(1,R,n)
+    M = R
+    return M
 	
-def mod_mult(a,b,N):
+
+
+
+def mont_mult(a,b,N):
 
 
     # a = conv(a, N)
@@ -39,8 +81,6 @@ def mod_mult(a,b,N):
     # print("S = " + str(S))
     return S
 
-
-
 def mod_exp(C,d,n):
 
     # C = conv(C, n)
@@ -53,9 +93,9 @@ def mod_exp(C,d,n):
     K = int(2**(2*k) % n)
     #print("K: " + str(K))
     # K = conv(K, n)
-    P_old = mod_mult(K,C,n)
+    P_old = mont_mult(K,C,n)
     # print("P_old: " + str(P_old))
-    R = mod_mult(K,1,n)
+    R = mont_mult(K,1,n)
     # print("R_old: " + str(R))
     # print("P_old: " + str(P_old) + " R: " + str(R))
     
@@ -63,16 +103,16 @@ def mod_exp(C,d,n):
         #print("number of bits: " + str(num_bits(d)))
         #print("d: " + str(d))
         # print("computing P")    
-        P = mod_mult(P_old,P_old,n)
+        P = mont_mult(P_old,P_old,n)
         # print("P: " + str(P) + " P_old: " + str(P_old))
         if (mask & d) == 1:
             # print("R_old: " + str(R))    
-            R = mod_mult(R,P_old,n)
+            R = mont_mult(R,P_old,n)
             # print("R: " + str(R))
         d = d >> 1
         P_old = P
     # print("computing final result")
-    M = mod_mult(1,R,n)
+    M = mont_mult(1,R,n)
     return M
 
 def conv(x, n):
