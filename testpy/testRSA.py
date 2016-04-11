@@ -32,8 +32,8 @@ modular_exponentiation = "ME"
 montgomery_multiplication = "MM"
 
 # Options variables
-data_width = 128
-num_tests = 100
+data_width = 32
+num_tests = 2
 
 def main():
 	generateTB(montgomery_multiplication)

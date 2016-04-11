@@ -62,7 +62,7 @@ def mod_exp(C,d,n):
     for i in range(num_bits(d)):
         #print("number of bits: " + str(num_bits(d)))
         #print("d: " + str(d))
-        print("computing P")    
+        # print("computing P")    
         P = mod_mult(P_old,P_old,n)
         # print("P: " + str(P) + " P_old: " + str(P_old))
         if (mask & d) == 1:
