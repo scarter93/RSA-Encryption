@@ -91,7 +91,7 @@ def mod_exp(C,d,n):
 
     mask = 0b00000001
     K = int(2**(2*k) % n)
-    #print("K: " + str(K))
+    print("K: " + str(K))
     # K = conv(K, n)
     P_old = mont_mult(K,C,n)
     # print("P_old: " + str(P_old))

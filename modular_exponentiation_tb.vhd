@@ -20,8 +20,9 @@ component modular_exponentiation is
 		WIDTH_IN : integer := 32
 	);
 	port(	N :	in unsigned(WIDTH_IN-1 downto 0); --Number
-		Exp :	in unsigned(WIDTH_IN-1 downto 0); --Exponent
-		M :	in unsigned(WIDTH_IN-1 downto 0); --Modulus
+		enc_dec : std_logic;
+		--Exp :	in unsigned(WIDTH_IN-1 downto 0); --Exponent
+		--M :	in unsigned(WIDTH_IN-1 downto 0); --Modulus
 		--latch_in: in std_logic;
 		clk :	in std_logic;
 		reset :	in std_logic;
@@ -39,6 +40,7 @@ Signal M_in : unsigned(WIDTH_IN-1 downto 0) := (WIDTH_IN-1 downto 0 => '0');
 Signal N_in : unsigned(WIDTH_IN-1 downto 0) := (WIDTH_IN-1 downto 0 => '0');
 Signal Exp_in : unsigned(WIDTH_IN-1 downto 0) := (WIDTH_IN-1 downto 0 => '0');
 signal latch_in : std_logic := '0';
+signal enc_dec : std_logic;
 
 Signal clk : std_logic := '0';
 Signal reset_t : std_logic := '0';
@@ -51,8 +53,9 @@ Begin
 dut: modular_exponentiation 
 			generic map(WIDTH_IN => WIDTH_IN)
 			PORT MAP(	N	=> 	N_in,
-					Exp 	=> 	Exp_in,
-					M 	=> 	M_in,
+					enc_dec => 	enc_dec,
+					--Exp 	=> 	Exp_in,
+					--M 	=> 	M_in,
 					--latch_in => latch_in,
 					clk	=> 	clk,
 					reset 	=>	reset_t,
@@ -76,7 +79,6 @@ Begin
 	wait for 1 * clk_period;
 	reset_t <= '0';
 	wait for 1 * clk_period;
-
 
 --	REPORT "Begin test case for base=1314923968, exp=65537, mod=3816753671";
 --	REPORT "Expected output is 2260331515, 10000110101110011110101111111011";

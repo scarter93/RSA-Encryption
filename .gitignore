@@ -18,6 +18,9 @@ wlf*
 *.do
 *.qpf
 *.qws
+*.qsf
+*.qdf
+*.qdf
 *.vstf
 
 # modelsim history

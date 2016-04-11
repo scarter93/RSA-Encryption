@@ -36,7 +36,7 @@ data_width = 32
 num_tests = 2
 
 def main():
-	generateTB(montgomery_multiplication)
+	#generateTB(montgomery_multiplication)
 	generateTB(modular_exponentiation)
 
 def generateTB(choice):
