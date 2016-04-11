@@ -15,6 +15,8 @@ proc AddWaves {} {
     add wave -radix unsigned -position end sim:/montgomery_comparison_tb/dut/M_temp
     add wave -radix unsigned -position end sim:/montgomery_comparison_tb/dut/mult_result
     add wave -radix unsigned -position end sim:/montgomery_comparison_tb/dut/state
+    add wave -radix unsigned -position end sim:/montgomery_comparison_tb/dut/compute/mult_count
+    add wave -radix unsigned -position end sim:/montgomery_comparison_tb/dut/compute/div_count	
 
 }
 
