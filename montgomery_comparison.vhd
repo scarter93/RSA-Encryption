@@ -83,11 +83,13 @@ M <= M_out;
 	divide: LPM_DIVIDE
 		generic map( 
 			LPM_WIDTHN => 2*WIDTH_IN,
-			LPM_WIDTHD => WIDTH_IN 
+			LPM_WIDTHD => WIDTH_IN,
+			LPM_PIPELINE => 2*WIDTH_IN 	 
 		)
 		port map(
 			numer => temp_mult_result,
 			denom => std_logic_vector(N_temp),
+			clock => clk,
 			remain => M_temp
 		);
 
@@ -104,15 +106,22 @@ M <= M_out;
 						B_temp <= B;
 						A_temp <= A;
 						N_temp <= N;
-						temp_mult_result <= mult_result;
 						state <= 1;
 					end if;
 		
 				when 1 =>
+					if(unsigned(mult_result) = zero)then
+						state <= 1;
+					else
+						temp_mult_result <= mult_result;
+						state <= 2;
+					end if;
+			
+				when 2 =>
 
 					if(unsigned(M_temp) = zero)then
 						data_ready <= '0';
-						state <= 1;
+						state <= 2;
 					else
 						data_ready <='1';
 						M_out <= unsigned(M_temp);
