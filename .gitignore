@@ -20,7 +20,7 @@ wlf*
 *.qws
 *.qsf
 *.qdf
-*.qdf
+*.rpt
 *.vstf
 
 # modelsim history

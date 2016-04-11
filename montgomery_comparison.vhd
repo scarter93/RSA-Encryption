@@ -51,7 +51,7 @@ mult: LPM_MULT
 			LPM_WIDTHA => WIDTH_IN,
 			LPM_WIDTHB => WIDTH_IN,
 			LPM_WIDTHP => 2*WIDTH_IN,
-			LPM_PIPELINE => 2*WIDTH_IN
+			LPM_PIPELINE => WIDTH_IN
 		)
 		port map(
 			DATAA => std_logic_vector(A_temp),
@@ -64,7 +64,7 @@ divide: LPM_DIVIDE
 		generic map( 
 			LPM_WIDTHN => 2*WIDTH_IN,
 			LPM_WIDTHD => WIDTH_IN,
-			LPM_PIPELINE => WIDTH_IN 	 
+			LPM_PIPELINE => 2*WIDTH_IN 	 
 		)
 		port map(
 			numer => temp_mult_result,
@@ -74,12 +74,15 @@ divide: LPM_DIVIDE
 		);
 
 	compute: process(clk, A, B, N, latch, reset)
+	variable mult_count, div_count : integer := 0;
 	Begin
 		if reset = '0' and rising_edge(clk) then
 			case state is
 				when 0 =>
 					if latch = '1' then
 						data_ready <= '0';
+						mult_count := 0;
+						div_count := 0;
 						B_temp <= B;
 						A_temp <= A;
 						N_temp <= N;
@@ -87,23 +90,27 @@ divide: LPM_DIVIDE
 					end if;
 		
 				when 1 =>
-					if(mult_result = mult_zero) OR (mult_result = mult_undefined) OR (mult_result = temp_mult_result)then
-						state <= 1;
-					else
+					if (mult_count = WIDTH_IN) then
 						temp_mult_result <= mult_result;
 						state <= 2;
+						
+					else
+						mult_count := mult_count + 1;
+						state <= 1;
 					end if;
 			
 				when 2 =>
 
-					if(M_temp = rem_zero) OR (M_temp = rem_undefined) OR (M_temp = M_temp_old) then
-						data_ready <= '0';
-						state <= 2;
-					else
+					if (div_count = 2*WIDTH_IN) then
 						data_ready <='1';
 						M_temp_old <= M_temp;
 						M <= unsigned(M_temp);
-						state <= 0;
+						state <= 0;	
+						
+					else
+						data_ready <= '0';
+						div_count := div_count + 1;
+						state <= 2;
 					end if;		
 				
 				when others =>
