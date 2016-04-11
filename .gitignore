@@ -16,9 +16,15 @@ wlf*
 *.mpf
 *.mti
 *.do
+*.qpf
+*.qws
+*.vstf
 
 # modelsim history
 transcript
 
 # compiled python files
 *.pyc
+
+#screenshots folder
+screenshots/
