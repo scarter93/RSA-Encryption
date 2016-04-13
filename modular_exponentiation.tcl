@@ -22,10 +22,10 @@ proc AddWaves {} {
 vlib work
 
 ;# Compile components if any
-;#vcom modular_exponentiation.vhd
-;#vcom montgomery_multiplier.vhd
-vcom mod_exp_comparison.vhd
-vcom montgomery_comparison.vhd
+vcom modular_exponentiation.vhd
+vcom montgomery_multiplier.vhd
+;#vcom mod_exp_comparison.vhd
+;#vcom montgomery_comparison.vhd
 vcom modular_exponentiation_tb.vhd
 
 ;# Start simulation
@@ -46,4 +46,4 @@ force -deposit clk 0 0 ns, 1 0.5 ns -repeat 1 ns
 
 
 ;# Run for 50 ns
-run 10000ns
+run 4204546ns

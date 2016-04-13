@@ -32,7 +32,7 @@ modular_exponentiation = "ME"
 montgomery_multiplication = "MM"
 
 # Options variables
-data_width = 32
+data_width = 1024
 num_tests = 2
 
 def main():
