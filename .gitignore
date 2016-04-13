@@ -22,6 +22,14 @@ wlf*
 *.qdf
 *.rpt
 *.vstf
+*.done
+*.smsg
+*.summary
+*.jdi
+*.pin
+*.sld
+*.sof
+*.db
 
 # modelsim history
 transcript

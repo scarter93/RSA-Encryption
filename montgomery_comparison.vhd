@@ -1,5 +1,5 @@
 -- Entity name: montgomery_comparison
--- Author: LuisGallet, Jacob Barnett
+-- Author: Luis Gallet, Jacob Barnett
 -- Contact: luis.galletzambrano@mail.mcgill.ca, jacob.barnett@mail.mcgill.ca
 -- Date: March 28th, 2016
 -- Description:
