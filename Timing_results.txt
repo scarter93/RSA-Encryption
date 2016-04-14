@@ -1,17 +1,17 @@
-mod_exp encryption 32-bit : 813500 ps
-mod_exp decryption 32-bit : (3898500 - 2211000) = 1687500  ps
+mod_exp encryption 32-bit : 813500 ps = 
+mod_exp decryption 32-bit : (3898500 - 2211000) = 1687500  ps = 1,867.5 cs
 
 mod_exp encryption 64-bit : 1517500 ps
-mod_exp decryption 64-bit : (15584500 - 8515000) = 7069500 ps
+mod_exp decryption 64-bit : (15584500 - 8515000) = 7069500 ps = 7,069.5 cs
 
 mod_exp encryption 128-bit : 2925500 ps
-mod_exp decryption 128-bit : (59280500- 33411000) = 25869500 ps
+mod_exp decryption 128-bit : (59280500- 33411000) = 25869500 ps = 25,869.5 cs
 
 comparison encryption 32-bit : 2042500 ps
-comparison decryption 32-bit : (6687500- 2211000) = 4476500 ps
+comparison decryption 32-bit : (6687500- 2211000) = 4476500 ps = 4,476.5 cs
 
 comparison encryption 64-bit : 3962500 ps
-comparison decryption 64-bit : (28478500- 8515000) = 19963500 ps
+comparison decryption 64-bit : (28478500- 8515000) = 19963500 ps = 19,963.5 cs
 
 comparison encryption 128-bit : 7802500 ps
-comparison decryption 128-bit : (108618500- 33411000) = 75207500 ps
+comparison decryption 128-bit : (108618500- 33411000) = 75207500 ps = 75,207.5 cs
