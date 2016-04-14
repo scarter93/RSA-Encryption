@@ -3,6 +3,8 @@
 -- Contact: luis.galletzambrano@mail.mcgill.ca, jacob.barnett@mail.mcgill.ca
 -- Date: March 28th, 2016
 -- Description:
+-- This module performs (A x B) mod n, which emulates the functionality of 
+-- montgomery_multiplier.vhd.
 
 library ieee;
 use IEEE.std_logic_1164.all;
@@ -73,9 +75,11 @@ divide: LPM_DIVIDE
 			remain => M_temp
 		);
 
-	compute: process(clk, A, B, N, latch, reset)
-	variable mult_count, div_count : integer := 0;
-	Begin
+compute: process(clk, A, B, N, latch, reset)
+	
+variable mult_count, div_count : integer := 0;
+	
+	begin
 		if reset = '0' and rising_edge(clk) then
 			case state is
 				when 0 =>

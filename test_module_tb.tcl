@@ -1,3 +1,11 @@
+puts {
+    ECSE 487 - Final Project
+    Modular Exponentiation Testbench
+    Authors : Luis Gallet, Jacob Barnett
+    Creation Date : 03/16/2016
+    Last Revision : 04/14/2016
+}
+
 proc AddWaves {} {
 	;#Add waves we're interested in to the Wave window
     add wave -radix unsigned -position end sim:/montgomery_comparison_tb/N_in
