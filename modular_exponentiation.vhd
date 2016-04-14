@@ -22,9 +22,9 @@ entity modular_exponentiation is
 	generic(WIDTH_IN : integer := 32
 	);
 	port(	N :	  in unsigned(WIDTH_IN-1 downto 0); --Number
-		--Exp :	  in unsigned(WIDTH_IN-1 downto 0); --Exponent
-		--M :	  in unsigned(WIDTH_IN-1 downto 0); --Modulus
-		enc_dec:  in std_logic;
+		Exp :	  in unsigned(WIDTH_IN-1 downto 0); --Exponent
+		M :	  in unsigned(WIDTH_IN-1 downto 0); --Modulus
+		--enc_dec:  in std_logic;
 		clk :	  in std_logic;
 		reset :	  in std_logic;
 		C : 	  out unsigned(WIDTH_IN-1 downto 0) --Output
@@ -34,7 +34,8 @@ end entity;
 architecture behavior of modular_exponentiation is 
 
 constant zero : unsigned(WIDTH_IN-1 downto 0) := (others => '0');
---signal one : unsigned(WIDTH_IN-1 downto 0);
+
+constant K : unsigned(WIDTH_IN-1 downto 0) := "00000111101101000101100111100010110001011000100100100000100010010110010001011000000100111101010010101101100110010001101000110100";
 
 --------------------------------------1024 bit constants-----------------------------------------------
 --constant K : unsigned (WIDTH_IN-1 downto 0) := "0000001010100000001100001010001010110100011100011001101100010001000001111100111000001001000001001011010111111101001000111100111101010100011110110111110101101000100010000110011110010110101000011011000111111000010000101101110001010001111010011000001110011111100011110000010110100101010000110101000100011110101100110010001011100100001000001011111011101000011010110000000010001101001011100101000110111001110110100010101101110111000000110110011110101011110010100001011000111111111101000110000100100000110101001000001001110110101100100010011100001110111001111100010110110011010011001011000000111011101101100100001000001101001100100110110101111111001111101111010100100111010101111010001000010110000110111101110000010011110101100111111110010001010000101000111110101010001000011101100110100011010010001011000001110110111110110100101001011000010111001110010000001001000010001100110000101110111101100100111000110110001000100011111111011010001100110011101101100100000001110000000001000000001010101101010010001010010101000111000000111111"; --change to std_logic_vector
@@ -64,12 +65,13 @@ constant zero : unsigned(WIDTH_IN-1 downto 0) := (others => '0');
 --constant dec_Exp : unsigned(WIDTH_IN-1 downto 0) := "00100001111011111100111101001100101110111001110111001011001110011101110101010000110110000011001011010111110100010101011000110111010000100100101010011001111000110001011000111101100001011001001000000101011001001000100000000111101011001100010000010110100100011111010101111100011101111001100011001001101001100111111011101011010110110111011110011010011000100011100111100000111001001101001111011111100011101010000010011111010111101011101101010111001100100111000111011111101101011110010011001000111011000111111110001001";
 -------------------------------------------------------------------------------------------------------
 
-------------------------------------32 bit constants------------------------------------------------
-constant K : unsigned (WIDTH_IN-1 downto 0) :=      "00000110010001101110000100100000";
-constant M : unsigned (WIDTH_IN-1 downto 0) := 		 "10000100010001111000010010000101";
-constant dec_Exp : unsigned(WIDTH_IN-1 downto 0) := "00101010110001011001000101000101";
-constant enc_Exp : unsigned(WIDTH_IN-1 downto 0) := "00000000000000010000000000000001";
------------------------------------------------------------------------------------------------------
+--------------------------------------32 bit constants------------------------------------------------
+--constant K : unsigned (WIDTH_IN-1 downto 0) :=      "00000110010001101110000100100000";
+--constant M : unsigned (WIDTH_IN-1 downto 0) := 		 "10000100010001111000010010000101";
+--constant dec_Exp : unsigned(WIDTH_IN-1 downto 0) := "00101010110001011001000101000101";
+--constant enc_Exp : unsigned(WIDTH_IN-1 downto 0) := "00000000000000010000000000000001";
+-------------------------------------------------------------------------------------------------------
+
 
 signal temp_A1,temp_A2 : unsigned(WIDTH_IN-1 downto 0) := (WIDTH_IN-1 downto 0 => '0');
 signal temp_B1, temp_B2 : unsigned(WIDTH_IN-1 downto 0) := (WIDTH_IN-1 downto 0 => '0');
@@ -180,7 +182,7 @@ case state is
 	
 	when s0 =>
 	--(M = zero) OR (Exp = zero) OR
-	if( (N = zero)) OR ((temp_M = M)  AND (temp_N = N)) then
+	if( (M = zero) OR (Exp = zero) OR (N = zero)) OR ((temp_M = M)  AND (temp_N = N)) then
 		state <= s0;
 	else
 		
@@ -191,14 +193,14 @@ case state is
 	when s1 =>
 	
 	if(temp_mod(WIDTH_IN-1) = '1')then	
-		--K_1 <= shift_left(to_unsigned(1,2*WIDTH_IN+1),(2*(WIDTH_IN-shift_count)));
-		
-		if(enc_dec = '1')then
-			temp_Exp := enc_Exp;
-		else
-			temp_Exp := dec_Exp;
-		end if;
-		--temp_Exp := Exp;
+--		--K_1 <= shift_left(to_unsigned(1,2*WIDTH_IN+1),(2*(WIDTH_IN-shift_count)));
+--		
+--		if(enc_dec = '1')then
+--			temp_Exp := enc_Exp;
+--		else
+--			temp_Exp := dec_Exp;
+--		end if;
+		temp_Exp := Exp;
 		temp_M <= M;
 		temp_N := N;
 		state <= s2;

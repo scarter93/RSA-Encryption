@@ -18,10 +18,11 @@ entity mod_exp_comparison is
 
 	generic(WIDTH_IN : integer := 32
 	);
-	port(	N :	  in unsigned(WIDTH_IN-1 downto 0); --Number
-		   --Exp :	  in unsigned(WIDTH_IN-1 downto 0); --Exponent
-		   --M :	  in unsigned(WIDTH_IN-1 downto 0); --Modulus
-			enc_dec:  in std_logic;
+	port(	
+		   N :	  in unsigned(WIDTH_IN-1 downto 0); --Number
+		   Exp :	  in unsigned(WIDTH_IN-1 downto 0); --Exponent
+		   M :	  in unsigned(WIDTH_IN-1 downto 0); --Modulus
+		   --enc_dec:  in std_logic;
 		   clk :	  in std_logic;
 		   reset :	  in std_logic;
 		   C : 	  out unsigned(WIDTH_IN-1 downto 0) --Output
@@ -32,12 +33,12 @@ architecture behavior of mod_exp_comparison is
 
 constant zero : unsigned(WIDTH_IN-1 downto 0) := (others => '0');
 
-------------------------------------32 bit constants------------------------------------------------
+--------------------------------------32 bit constants------------------------------------------------
 --constant K : unsigned (WIDTH_IN-1 downto 0) := "00000110010001101110000100100000101111011101110010111101100011001010101111001011011010101000010100001011000100011101101000011110";
-constant M : unsigned (WIDTH_IN-1 downto 0) := 		 "10000100010001111000010010000101";
-constant dec_Exp : unsigned(WIDTH_IN-1 downto 0) := "00101010110001011001000101000101";
-constant enc_Exp : unsigned(WIDTH_IN-1 downto 0) := "00000000000000010000000000000001";
------------------------------------------------------------------------------------------------------
+--constant M : unsigned (WIDTH_IN-1 downto 0) := 		 "10000100010001111000010010000101";
+--constant dec_Exp : unsigned(WIDTH_IN-1 downto 0) := "00101010110001011001000101000101";
+--constant enc_Exp : unsigned(WIDTH_IN-1 downto 0) := "00000000000000010000000000000001";
+-------------------------------------------------------------------------------------------------------
 
 signal temp_A1,temp_A2 : unsigned(WIDTH_IN-1 downto 0) := (WIDTH_IN-1 downto 0 => '0');
 signal temp_B1, temp_B2 : unsigned(WIDTH_IN-1 downto 0) := (WIDTH_IN-1 downto 0 => '0');
@@ -130,7 +131,7 @@ case state is
 	when s0 =>
 	
 	--(M = zero) OR (Exp = zero) OR
-	if( (N = zero)) OR ((temp_M = M)  AND (temp_N = N)) then
+	if((M = zero) OR (Exp = zero) OR (N = zero)) OR ((temp_M = M)  AND (temp_N = N)) then
 		state <= s0;
 	else
 		
@@ -141,12 +142,12 @@ case state is
 	when s1 =>
 	
 	if(temp_mod(WIDTH_IN-1) = '1')then	
-		if(enc_dec = '1')then
-			temp_Exp := enc_Exp;
-		else
-			temp_Exp := dec_Exp;
-		end if;
-		--temp_Exp := Exp;
+--		if(enc_dec = '1')then
+--			temp_Exp := enc_Exp;
+--		else
+--			temp_Exp := dec_Exp;
+--		end if;
+		temp_Exp := Exp;
 		temp_M <= M;
 		temp_N := N;
 		state <= s2;
