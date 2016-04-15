@@ -41,6 +41,7 @@ constant dec_Exp : unsigned(WIDTH_IN-1 downto 0) := "001010101100010110010001010
 constant enc_Exp : unsigned(WIDTH_IN-1 downto 0) := "00000000000000010000000000000001";
 -------------------------------------------------------------------------------------------------------
 
+-- Intermidiate signals
 signal temp_A1,temp_A2 : unsigned(WIDTH_IN-1 downto 0) := (WIDTH_IN-1 downto 0 => '0');
 signal temp_B1, temp_B2 : unsigned(WIDTH_IN-1 downto 0) := (WIDTH_IN-1 downto 0 => '0');
 signal temp_d_ready, temp_d_ready2 : std_logic := '0';
@@ -51,6 +52,7 @@ signal latch_in, latch_in2 : std_logic := '0';
 signal temp_M : unsigned(WIDTH_IN-1 downto 0) := (WIDTH_IN-1 downto 0 => '0');
 signal temp_C : unsigned(WIDTH_IN-1 downto 0):= (WIDTH_IN-1 downto 0 => '0');
 
+-- FSM states
 type STATE_TYPE is (s0, s1, s2, s3, s4, s5, s6, s7, s8);
 signal state: STATE_TYPE := s0;
 
@@ -70,7 +72,7 @@ end component;
 
 begin
 
-
+-- Montgomery comparison components
 mont_mult_1: montgomery_comparison
 	generic map(WIDTH_IN => WIDTH_IN)
 	port map(
@@ -129,6 +131,7 @@ elsif rising_edge(clk) then
 
 case state is 
 	
+	-- Check if there are new inputs available 	
 	when s0 =>
 	
 	--(M = zero) OR (Exp = zero) OR
@@ -140,6 +143,7 @@ case state is
 		state <= s1;
 	end if;
 
+	-- If MSB of modulus is not 1 then shift it left until a 1 is found and count how many times it was shifted	
 	when s1 =>
 	
 	if(temp_mod(WIDTH_IN-1) = '1')then	
@@ -158,11 +162,13 @@ case state is
 		state <= s1;
 	end if;
 
+	-- Assign initial values to P and R	
 	when s2 =>
 		P_old := temp_N;
 		R := to_unsigned(1,WIDTH_IN);
 		state <= s3;
 
+	-- Check Listing 1 in report. This operation is inside the for loop and it is always performed	
 	when s3 =>
 		temp_A1 <= P_old;
 		temp_B1 <= P_old;
@@ -172,6 +178,7 @@ case state is
 			state <= s4;
 		end if;
 
+	-- If LSB of the exponent is 1 then compute R, else go to state 7	
 	when s4 =>
 	latch_in <= '0';
 	
@@ -200,12 +207,13 @@ case state is
 			state <= s7;
 		end if;
 	
+	-- If the statement is true, it means that we have checked all bits in the exponent or exponent is zero and we compute the output	
 	when s7 =>
 		if (count = (WIDTH_IN-1)-shift_count) OR (temp_Exp = zero) then
 			temp_C <= R;			
 			state <= s8;
 			
-		else
+		else -- if the statement is false, then we shift the exponent right and increment count
 			temp_Exp := (shift_right(temp_Exp, natural(1)));
 			P_old := P;
 			count := count + 1;

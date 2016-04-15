@@ -66,7 +66,7 @@ constant zero : unsigned(WIDTH_IN-1 downto 0) := (others => '0');
 -------------------------------------------------------------------------------------------------------
 
 
-
+-- Intermidiate signals
 signal temp_A1,temp_A2 : unsigned(WIDTH_IN-1 downto 0) := (WIDTH_IN-1 downto 0 => '0');
 signal temp_B1, temp_B2 : unsigned(WIDTH_IN-1 downto 0) := (WIDTH_IN-1 downto 0 => '0');
 signal temp_d_ready, temp_d_ready2 : std_logic := '0';
@@ -77,9 +77,10 @@ signal latch_in, latch_in2 : std_logic := '0';
 signal temp_M : unsigned(WIDTH_IN-1 downto 0) := (WIDTH_IN-1 downto 0 => '0');
 signal temp_C : unsigned(WIDTH_IN-1 downto 0):= (WIDTH_IN-1 downto 0 => '0');
 
-
+-- FSM states
 type STATE_TYPE is (s0, s1, s2, s3, s4, s5, s6, s7, s8, s9, s10);
 signal state: STATE_TYPE := s0;
+
 
 component montgomery_multiplier
 Generic(WIDTH_IN : integer := 8
@@ -96,6 +97,8 @@ Generic(WIDTH_IN : integer := 8
 end component;
 
 begin
+
+-- Montgomery Multiplier components
 
 mont_mult_1: montgomery_multiplier
 	generic map(WIDTH_IN => WIDTH_IN)
@@ -155,6 +158,7 @@ elsif rising_edge(clk) then
 
 case state is 
 	
+	-- Check if there are new inputs available 
 	when s0 =>
 	--(M = zero) OR (Exp = zero) OR
 	if((N = zero)) OR ((temp_M = M)  AND (temp_N = N)) then
@@ -165,6 +169,7 @@ case state is
 		state <= s1;
 	end if;
 
+	-- If MSB of modulus is not 1 then shift it left until a 1 is found and count how many times it was shifted
 	when s1 =>
 	
 	if(temp_mod(WIDTH_IN-1) = '1')then			
@@ -184,6 +189,7 @@ case state is
 		state <= s1;
 	end if;
 
+	-- Compute initial value of P and R	
 	when s2 => 
 	
 	if(unsigned(K) > zero)then
@@ -203,6 +209,7 @@ case state is
 		state <= s2;
 	end if;
 
+	-- Assign the results of the computations
 	when s3 =>
 	latch_in <= '0';
 	latch_in2 <= '0';
@@ -213,7 +220,7 @@ case state is
 		state <= s4;
 	end if; 
 
-
+	-- Check Listing 1 in report. This operation is inside the for loop and it is always performed
 	when s4 =>
 		temp_A1 <= P_old;
 		temp_B1 <= P_old;
@@ -223,6 +230,7 @@ case state is
 			state <= s5;
 		end if;
 
+	-- If LSB of the exponent is 1 then compute R, else go to state 8
 	when s5 =>
 	latch_in <= '0';
 	
@@ -251,13 +259,14 @@ case state is
 			state <= s8;
 		end if;
 	
+	-- If the statement is true, it means that we have checked all bits in the exponent or exponent is zero and we compute the output
 	when s8 =>
 		if (count = (WIDTH_IN-1)-shift_count) OR (temp_Exp = zero) then
 			temp_A1 <= to_unsigned(1,WIDTH_IN);
 			temp_B1 <= R;			
 			state <= s9;
 			
-		else
+		else    -- if the statement is false, then we shift the exponent right and increment count
 			temp_Exp := (shift_right(temp_Exp, natural(1)));
 			P_old := P;
 			count := count + 1;

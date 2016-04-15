@@ -28,6 +28,7 @@ end entity;
 
 architecture behavioral of montgomery_comparison is
 
+-- Intermidiate signals
 signal A_temp : unsigned(WIDTH_IN-1 downto 0):= (others => '0');
 signal B_temp : unsigned(WIDTH_IN-1 downto 0):= (others => '0');
 signal N_temp : unsigned(WIDTH_IN-1 downto 0):= (others => '0');
@@ -47,6 +48,8 @@ signal temp_mult_result : std_logic_vector(2*WIDTH_IN-1 downto 0) := (others => 
 signal state : integer := 0;
 
 Begin
+
+-- LPM multiplier and divider components
  
 mult: LPM_MULT
 		generic map(
@@ -82,6 +85,7 @@ variable mult_count, div_count : integer := 0;
 	begin
 		if reset = '0' and rising_edge(clk) then
 			case state is
+				-- Reset values to begin a new operation
 				when 0 =>
 					if latch = '1' then
 						data_ready <= '0';
@@ -92,26 +96,27 @@ variable mult_count, div_count : integer := 0;
 						N_temp <= N;
 						state <= 1;
 					end if;
-		
+
+				-- If the multiplication is done, then start the division		
 				when 1 =>
 					if (mult_count = WIDTH_IN) then
 						temp_mult_result <= mult_result;
 						state <= 2;
 						
-					else
+					else -- increment multiplication counter if the operation is not done
 						mult_count := mult_count + 1;
 						state <= 1;
 					end if;
 			
+				-- If division is done, then output the remainder and data ready is 1
 				when 2 =>
-
 					if (div_count = 2*WIDTH_IN) then
 						data_ready <='1';
 						M_temp_old <= M_temp;
 						M <= unsigned(M_temp);
 						state <= 0;	
 						
-					else
+					else -- increment the division counter and set data ready to 0
 						data_ready <= '0';
 						div_count := div_count + 1;
 						state <= 2;
